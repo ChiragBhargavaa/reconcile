@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
@@ -19,11 +19,15 @@ export async function GET(
     memberIds: session.user.id,
   });
   if (!group) return NextResponse.json({ error: "Group not found" }, { status: 404 });
-  const expenses = await db
+  const url = new URL(request.url);
+  const limitParam = url.searchParams.get("limit");
+  const limit = limitParam ? Math.max(1, parseInt(limitParam, 10) || 0) : 0;
+  let cursor = db
     .collection("expenses")
     .find({ groupId: id })
-    .sort({ createdAt: -1 })
-    .toArray();
+    .sort({ createdAt: -1 });
+  if (limit > 0) cursor = cursor.limit(limit);
+  const expenses = await cursor.toArray();
   const userIds = new Set<string>();
   expenses.forEach((e) => {
     userIds.add(e.payerId as string);

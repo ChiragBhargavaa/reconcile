@@ -47,6 +47,8 @@ export default async function GroupPage({
     userMap[u._id.toString()] = { name: u.name, username: u.username };
   });
 
+  const duplicatePaymentCheck = group.settings?.duplicatePaymentCheck !== false;
+
   const balances = await computeGroupBalances(id);
   const summary = formatBalanceSummary(balances, session.user.id, userMap);
 
@@ -59,6 +61,7 @@ export default async function GroupPage({
             groupId={id}
             members={memberIds.map((m) => ({ id: m, name: userMap[m]?.name || userMap[m]?.username || "Unknown" }))}
             currentUserId={session.user.id}
+            duplicatePaymentCheck={duplicatePaymentCheck}
           />
         </div>
       </div>
@@ -77,6 +80,7 @@ export default async function GroupPage({
             groupId={id}
             members={memberIds.map((m) => ({ id: m, name: userMap[m]?.name || userMap[m]?.username || "Unknown" }))}
             currentUserId={session.user.id}
+            duplicatePaymentCheck={duplicatePaymentCheck}
           />
         </div>
 

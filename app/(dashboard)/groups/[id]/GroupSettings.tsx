@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2, UserMinus, UserPlus, Search, Settings } from "lucide-react";
+import { Trash2, UserMinus, UserPlus, Search, Settings, ShieldCheck } from "lucide-react";
 
 type Member = { id: string; name: string };
 type SearchUser = { id: string; name?: string; username?: string };
@@ -11,17 +11,23 @@ export function GroupSettings({
   groupId,
   members,
   currentUserId,
+  duplicatePaymentCheck: initialDuplicateCheck = true,
 }: {
   groupId: string;
   members: Member[];
   currentUserId: string;
+  duplicatePaymentCheck?: boolean;
 }) {
   const router = useRouter();
   const [show, setShow] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  const [dupCheck, setDupCheck] = useState(initialDuplicateCheck);
+  const [togglingDupCheck, setTogglingDupCheck] = useState(false);
 
   const [search, setSearch] = useState("");
   const [searchType, setSearchType] = useState<"username" | "email" | "phone">("username");
@@ -30,6 +36,30 @@ export function GroupSettings({
   const [addingId, setAddingId] = useState<string | null>(null);
 
   const memberIds = new Set(members.map((m) => m.id));
+
+  const toggleDuplicateCheck = async () => {
+    setTogglingDupCheck(true);
+    setError("");
+    const newValue = !dupCheck;
+    try {
+      const res = await fetch(`/api/groups/${groupId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ settings: { duplicatePaymentCheck: newValue } }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Failed to update setting");
+        return;
+      }
+      setDupCheck(newValue);
+      router.refresh();
+    } catch {
+      setError("Something went wrong");
+    } finally {
+      setTogglingDupCheck(false);
+    }
+  };
 
   const deleteGroup = async () => {
     setDeleting(true);
@@ -152,19 +182,75 @@ export function GroupSettings({
                 {m.name} {m.id === currentUserId && <span className="text-xs text-zinc-400">(you)</span>}
               </span>
               {m.id !== currentUserId && members.length > 2 && (
-                <button
-                  type="button"
-                  onClick={() => removeMember(m.id)}
-                  disabled={removingId === m.id}
-                  className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-red-600 disabled:opacity-50 dark:hover:text-red-400"
-                >
-                  <UserMinus size={12} />
-                  {removingId === m.id ? "Removing..." : "Remove"}
-                </button>
+                confirmRemoveId === m.id ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400">Sure?</span>
+                    <button
+                      type="button"
+                      onClick={() => { setConfirmRemoveId(null); removeMember(m.id); }}
+                      disabled={removingId === m.id}
+                      className="text-xs font-medium text-red-600 hover:text-red-700 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                      {removingId === m.id ? "Removing..." : "Yes"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmRemoveId(null)}
+                      className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                    >
+                      No
+                    </button>
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => { setError(""); setConfirmRemoveId(m.id); }}
+                    disabled={removingId === m.id}
+                    className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-red-600 disabled:opacity-50 dark:hover:text-red-400"
+                  >
+                    <UserMinus size={12} />
+                    Remove
+                  </button>
+                )
               )}
             </li>
           ))}
         </ul>
+      </div>
+
+      {/* Duplicate payment check */}
+      <div className="border-t border-zinc-200 pt-4 dark:border-zinc-700">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ShieldCheck size={14} className="text-zinc-500 dark:text-zinc-400" />
+            <div>
+              <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100">
+                Check for accidental payments
+              </p>
+              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                Warns when a new expense matches the last one
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={toggleDuplicateCheck}
+            disabled={togglingDupCheck}
+            className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors focus:outline-none disabled:opacity-50 ${
+              dupCheck
+                ? "bg-emerald-600 dark:bg-emerald-500"
+                : "bg-zinc-300 dark:bg-zinc-600"
+            }`}
+            role="switch"
+            aria-checked={dupCheck}
+          >
+            <span
+              className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                dupCheck ? "translate-x-[18px]" : "translate-x-[3px]"
+              }`}
+            />
+          </button>
+        </div>
       </div>
 
       {/* Add member */}

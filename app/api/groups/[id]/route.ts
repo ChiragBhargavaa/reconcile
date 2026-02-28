@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { connectDB } from "@/lib/db";
+import { computeGroupBalances } from "@/lib/utils/balance";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
@@ -28,6 +29,7 @@ export async function GET(
           .toArray()
       : [];
   const userMap = Object.fromEntries(users.map((u) => [u._id.toString(), u]));
+  const settings = group.settings ?? { duplicatePaymentCheck: true };
   return NextResponse.json({
     id: group._id.toString(),
     name: group.name,
@@ -39,6 +41,7 @@ export async function GET(
       username: userMap[id]?.username,
       image: userMap[id]?.image,
     })),
+    settings,
     createdAt: group.createdAt,
   });
 }
@@ -57,11 +60,40 @@ export async function PATCH(
   const db = await connectDB();
   const update: Record<string, unknown> = { updatedAt: new Date() };
   if (typeof body.name === "string" && body.name.trim()) update.name = body.name.trim();
+  if (body.settings && typeof body.settings === "object") {
+    const s = body.settings as Record<string, unknown>;
+    if (typeof s.duplicatePaymentCheck === "boolean") {
+      update["settings.duplicatePaymentCheck"] = s.duplicatePaymentCheck;
+    }
+  }
   if (Array.isArray(body.memberIds)) {
     const memberIds = (body.memberIds as string[]).filter((id: unknown) => typeof id === "string");
     if (!memberIds.includes(session.user.id)) {
       return NextResponse.json({ error: "Cannot remove yourself" }, { status: 400 });
     }
+
+    const currentGroup = await db.collection("groups").findOne({ _id: new ObjectId(id) });
+    const currentMemberIds = (currentGroup?.memberIds || []) as string[];
+    const removedIds = currentMemberIds.filter((mid) => !memberIds.includes(mid));
+
+    if (removedIds.length > 0) {
+      const balances = await computeGroupBalances(id);
+      for (const removedId of removedIds) {
+        const row = balances.get(removedId);
+        if (!row) continue;
+        for (const [, amount] of row.entries()) {
+          if (amount > 0) {
+            const user = await db.collection("users").findOne({ _id: new ObjectId(removedId) });
+            const name = user?.name || user?.username || "This member";
+            return NextResponse.json(
+              { error: `${name} still has unsettled debts in this group. Please settle all balances before removing them.` },
+              { status: 400 }
+            );
+          }
+        }
+      }
+    }
+
     update.memberIds = Array.from(new Set(memberIds));
   }
   const result = await db.collection("groups").findOneAndUpdate(
