@@ -63,12 +63,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user && token.userId) {
         (session.user as { id?: string }).id = token.userId as string;
-        const db = await connectDB();
-        const dbUser = await db.collection("users").findOne(
-          { _id: new ObjectId(token.userId as string) },
-          { projection: { username: 1 } }
-        );
-        (session.user as { username?: string | null }).username = dbUser?.username ?? null;
+        (session.user as { username?: string | null }).username = (token.username as string) ?? null;
       }
       return session;
     },

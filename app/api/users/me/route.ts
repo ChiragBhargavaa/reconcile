@@ -43,6 +43,9 @@ export async function PATCH(request: Request) {
     if (username.length < 3) {
       return NextResponse.json({ error: "Username must be at least 3 characters" }, { status: 400 });
     }
+    if (username.length > 20) {
+      return NextResponse.json({ error: "Username must be at most 20 characters" }, { status: 400 });
+    }
     const db = await connectDB();
     const email = session.user.email;
     const existing = await db.collection("users").findOne({ username });

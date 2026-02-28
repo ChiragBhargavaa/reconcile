@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { GroupExpenses } from "./GroupExpenses";
 import { AddExpenseForm } from "./AddExpenseForm";
 import { SettleUpForm } from "./SettleUpForm";
+import { GroupSettings } from "./GroupSettings";
 
 export default async function GroupPage({
   params,
@@ -71,6 +72,13 @@ export default async function GroupPage({
         </Link>
         <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">{group.name}</h1>
         <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{memberIds.length} members</p>
+        <div className="mt-2">
+          <GroupSettings
+            groupId={id}
+            members={memberIds.map((m) => ({ id: m, name: userMap[m]?.name || userMap[m]?.username || "Unknown" }))}
+            currentUserId={session.user.id}
+          />
+        </div>
 
         <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:gap-6">
           <div className="shrink-0 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 lg:w-56">

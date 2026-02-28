@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
   if (pathname === "/signin") {
     return NextResponse.redirect(new URL(token.username ? "/" : onboardingPath, request.url));
   }
-  if (!token.username && pathname !== onboardingPath && !pathname.startsWith("/api/") && pathname !== "/") {
+  if (!token.username && pathname !== onboardingPath && !pathname.startsWith("/api/")) {
     return NextResponse.redirect(new URL(onboardingPath, request.url));
   }
   if (token.username && pathname === onboardingPath) {

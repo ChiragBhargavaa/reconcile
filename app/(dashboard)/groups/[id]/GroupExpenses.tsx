@@ -17,15 +17,14 @@ export function GroupExpenses({ groupId, groupName }: { groupId: string; groupNa
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchExpenses = () => {
-    fetch(`/api/groups/${groupId}/expenses`)
-      .then((r) => r.json())
-      .then(setExpenses)
-      .catch(() => setExpenses([]))
-      .finally(() => setLoading(false));
-  };
-
   useEffect(() => {
+    const fetchExpenses = () => {
+      fetch(`/api/groups/${groupId}/expenses`)
+        .then((r) => r.json())
+        .then(setExpenses)
+        .catch(() => setExpenses([]))
+        .finally(() => setLoading(false));
+    };
     fetchExpenses();
     const handler = () => fetchExpenses();
     window.addEventListener("expense-added", handler);

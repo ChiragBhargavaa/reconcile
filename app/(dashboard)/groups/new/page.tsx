@@ -13,6 +13,7 @@ export default function NewGroupPage() {
   const [searchType, setSearchType] = useState<"username" | "email" | "phone">("username");
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [searching, setSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const [selected, setSelected] = useState<Map<string, User>>(new Map());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -21,6 +22,7 @@ export default function NewGroupPage() {
   const doSearch = () => {
     if (!search.trim() || search.trim().length < 2) return;
     setSearching(true);
+    setHasSearched(true);
     fetch(`/api/users?q=${encodeURIComponent(search.trim())}&type=${searchType}`)
       .then((r) => r.json())
       .then((data) => setSearchResults(Array.isArray(data) ? data : []))
@@ -144,6 +146,11 @@ export default function NewGroupPage() {
                 </li>
               ))}
             </ul>
+          )}
+          {hasSearched && !searching && searchResults.length === 0 && (
+            <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+              No users found. Try a different search term.
+            </p>
           )}
           {selected.size > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
