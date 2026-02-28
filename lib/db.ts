@@ -25,7 +25,6 @@ async function ensureIndexes(database: Db) {
   await database.collection("connections").createIndex({ userId1: 1, userId2: 1 }, { unique: true });
   await database.collection("connections").createIndex({ userId1: 1, status: 1 });
   await database.collection("friendlinks").createIndex({ code: 1 }, { unique: true });
-  await database.collection("phoneverifications").createIndex({ userId: 1 });
 }
 
 export async function getDb(): Promise<Db> {

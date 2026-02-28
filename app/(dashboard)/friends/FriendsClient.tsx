@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Link2, Search, Phone, UserCheck, UserX, UserPlus, Users } from "lucide-react";
+import { Link2, Search, UserCheck, UserX, UserPlus, Users } from "lucide-react";
 
 type User = { id: string; name?: string | null; username?: string | null; image?: string | null };
 
@@ -21,11 +21,6 @@ export function FriendsClient({
   const [hasSearched, setHasSearched] = useState(false);
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [loadingInvite, setLoadingInvite] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [phoneStep, setPhoneStep] = useState<"none" | "sent" | "verified">("none");
-  const [loadingPhone, setLoadingPhone] = useState(false);
-  const [phoneError, setPhoneError] = useState("");
   const [requestingIds, setRequestingIds] = useState<Set<string>>(new Set());
   const [requestedIds, setRequestedIds] = useState<Set<string>>(new Set());
   const [acceptingIds, setAcceptingIds] = useState<Set<string>>(new Set());
@@ -131,69 +126,6 @@ export function FriendsClient({
       // ignore
     } finally {
       setLoadingInvite(false);
-    }
-  };
-
-  const sendOtp = async () => {
-    setPhoneError("");
-    const p = phone.replace(/\D/g, "");
-    if (p.length < 10) {
-      setPhoneError("Enter a valid phone number with country code (e.g. 911234567890)");
-      return;
-    }
-    setLoadingPhone(true);
-    try {
-      const res = await fetch("/api/phone/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: p }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setPhoneError(data.error || "Failed to send verification code");
-        return;
-      }
-      if (data.skipVerification) {
-        setPhoneStep("verified");
-      } else {
-        setPhoneStep("sent");
-      }
-    } catch {
-      setPhoneError("Network error. Please try again.");
-    } finally {
-      setLoadingPhone(false);
-    }
-  };
-
-  const verifyOtp = async () => {
-    setPhoneError("");
-    const p = phone.replace(/\D/g, "");
-    if (!otp || otp.length !== 6) {
-      setPhoneError("Enter the 6-digit code sent to your phone");
-      return;
-    }
-    if (p.length < 10) {
-      setPhoneError("Invalid phone number");
-      return;
-    }
-    setLoadingPhone(true);
-    try {
-      const res = await fetch("/api/phone/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: p, code: otp }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setPhoneError(data.error || "Verification failed. Check the code and try again.");
-        return;
-      }
-      setPhoneStep("verified");
-      setOtp("");
-    } catch {
-      setPhoneError("Network error. Please try again.");
-    } finally {
-      setLoadingPhone(false);
     }
   };
 
@@ -310,91 +242,6 @@ export function FriendsClient({
           <p className="mt-2 text-sm text-green-600 dark:text-green-400">
             Link copied to clipboard: {inviteUrl}
           </p>
-        )}
-      </section>
-
-      {/* Phone Verification */}
-      <section>
-        <h2 className="mb-3 text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-          Verify phone number
-        </h2>
-        <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Add your phone number so friends can find you by searching
-        </p>
-        {phoneStep === "verified" ? (
-          <p className="text-sm font-medium text-green-600 dark:text-green-400">
-            Phone verified successfully!
-          </p>
-        ) : phoneStep === "sent" ? (
-          <div className="space-y-2">
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              A 6-digit code was sent to your phone. Enter it below:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => {
-                  setOtp(e.target.value.replace(/\D/g, "").slice(0, 6));
-                  setPhoneError("");
-                }}
-                placeholder="123456"
-                maxLength={6}
-                className="w-32 rounded-lg border border-zinc-300 px-4 py-2 text-center font-mono tracking-widest dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-              />
-              <button
-                type="button"
-                onClick={verifyOtp}
-                disabled={loadingPhone}
-                className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-              >
-                {loadingPhone ? "Verifying..." : "Verify"}
-              </button>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setPhoneStep("none");
-                setOtp("");
-                setPhoneError("");
-              }}
-              className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-            >
-              Change phone number
-            </button>
-            {phoneError && (
-              <p className="text-sm text-red-600 dark:text-red-400">{phoneError}</p>
-            )}
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <div className="flex flex-wrap gap-2">
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => {
-                  setPhone(e.target.value);
-                  setPhoneError("");
-                }}
-                placeholder="+91 98765 43210"
-                className="rounded-lg border border-zinc-300 px-4 py-2 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-              />
-              <button
-                type="button"
-                onClick={sendOtp}
-                disabled={loadingPhone}
-                className="inline-flex items-center gap-2 rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-              >
-                <Phone size={18} /> {loadingPhone ? "Sending..." : "Send code"}
-              </button>
-            </div>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Include country code (e.g. +91 for India, +1 for US)
-            </p>
-            {phoneError && (
-              <p className="text-sm text-red-600 dark:text-red-400">{phoneError}</p>
-            )}
-          </div>
         )}
       </section>
 

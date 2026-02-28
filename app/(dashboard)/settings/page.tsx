@@ -1,68 +1,52 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Check, Loader2 } from "lucide-react";
 
 const USERNAME_MAX_LENGTH = 20;
 const USERNAME_MIN_LENGTH = 3;
 const USERNAME_REGEX = /^[a-z0-9_]+$/;
 
-export default function OnboardingPage() {
+type UserProfile = {
+  id: string;
+  email: string;
+  name: string | null;
+  image: string | null;
+  username: string | null;
+  phone: string | null;
+};
+
+export default function SettingsPage() {
+  const { data: session, update } = useSession();
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
+  const [fetching, setFetching] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
+  const [saved, setSaved] = useState(false);
   const [availability, setAvailability] = useState<"idle" | "checking" | "available" | "taken">("idle");
-  const router = useRouter();
-  const { data: session, status, update } = useSession();
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
-  const initializedRef = useRef(false);
 
   useEffect(() => {
-    if (status !== "authenticated" || initializedRef.current) return;
-    initializedRef.current = true;
-
-    async function fetchProfile() {
+    async function load() {
       try {
         const res = await fetch("/api/users/me");
-        if (res.ok) {
-          const data = await res.json();
-          setName(data.name || session?.user?.name || "");
-          if (data.phone) {
-            setPhone(data.phone.replace(/^\+91/, ""));
-          }
-        } else {
-          setName(session?.user?.name || "");
-        }
-      } catch {
-        setName(session?.user?.name || "");
+        if (!res.ok) return;
+        const data: UserProfile = await res.json();
+        setProfile(data);
+        setName(data.name || "");
+        setUsername(data.username || "");
+        setPhone(data.phone?.replace(/^\+91/, "") || "");
       } finally {
         setFetching(false);
       }
     }
-    fetchProfile();
-  }, [status, session]);
-
-  if (status === "loading" || fetching) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950">
-        <div className="text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-900 dark:border-zinc-700 dark:border-t-zinc-100" />
-          <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">Loading your profile...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!session) {
-    router.replace("/signin");
-    return null;
-  }
+    load();
+  }, []);
 
   const validateUsername = (value: string): string | null => {
     if (!value) return null;
@@ -75,6 +59,10 @@ export default function OnboardingPage() {
   const checkAvailability = (value: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     const trimmed = value.trim().toLowerCase();
+    if (trimmed === profile?.username) {
+      setAvailability("idle");
+      return;
+    }
     const formatError = validateUsername(trimmed);
     if (formatError || !trimmed) {
       setAvailability("idle");
@@ -99,6 +87,7 @@ export default function OnboardingPage() {
 
   const handleUsernameChange = (value: string) => {
     setUsername(value);
+    setSaved(false);
     setFieldErrors((prev) => ({ ...prev, username: "" }));
     const trimmed = value.trim().toLowerCase();
     const formatError = validateUsername(trimmed);
@@ -113,13 +102,25 @@ export default function OnboardingPage() {
   const handlePhoneChange = (value: string) => {
     const digits = value.replace(/\D/g, "").slice(0, 10);
     setPhone(digits);
+    setSaved(false);
     setFieldErrors((prev) => ({ ...prev, phone: "" }));
+  };
+
+  const hasChanges = () => {
+    if (!profile) return false;
+    const currentPhone = profile.phone?.replace(/^\+91/, "") || "";
+    return (
+      name.trim() !== (profile.name || "") ||
+      username.trim().toLowerCase() !== (profile.username || "") ||
+      phone !== currentPhone
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setFieldErrors({});
+    setSaved(false);
 
     const trimmedName = name.trim();
     const trimmedUsername = username.trim().toLowerCase();
@@ -137,59 +138,92 @@ export default function OnboardingPage() {
       return;
     }
 
-    setLoading(true);
+    setSaving(true);
     try {
-      const payload: Record<string, string> = {
-        name: trimmedName,
-        username: trimmedUsername,
-      };
-      if (trimmedPhone) payload.phone = trimmedPhone;
+      const payload: Record<string, string> = {};
+      if (trimmedName !== (profile?.name || "")) payload.name = trimmedName;
+      if (trimmedUsername !== (profile?.username || "")) payload.username = trimmedUsername;
+      const currentPhone = profile?.phone?.replace(/^\+91/, "") || "";
+      if (trimmedPhone !== currentPhone) payload.phone = trimmedPhone;
+
+      if (Object.keys(payload).length === 0) {
+        setSaved(true);
+        return;
+      }
 
       const res = await fetch("/api/users/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const text = await res.text();
-      let data: { error?: string } = {};
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch {
-        setError(res.ok ? "Invalid response from server" : `Server error (${res.status})`);
-        return;
-      }
+      const data = await res.json();
       if (!res.ok) {
-        setError(data.error || `Failed to save profile (${res.status})`);
+        setError(data.error || `Failed to save (${res.status})`);
         return;
       }
-      setSuccess(true);
-      await update();
-      router.replace("/");
-      router.refresh();
+
+      setProfile((prev) =>
+        prev
+          ? {
+              ...prev,
+              name: trimmedName,
+              username: trimmedUsername,
+              phone: trimmedPhone ? `+91${trimmedPhone}` : null,
+            }
+          : prev
+      );
+      setSaved(true);
+
+      if (payload.username || payload.name) {
+        await update();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950">
-      <main className="w-full max-w-md space-y-6 rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+  if (fetching) {
+    return (
+      <div className="flex items-center justify-center py-20">
         <div className="text-center">
-          {session.user.image && (
+          <Loader2 className="mx-auto h-8 w-8 animate-spin text-zinc-400" />
+          <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">Loading settings...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-lg space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          Settings
+        </h1>
+        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          Manage your profile information
+        </p>
+      </div>
+
+      <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        {/* Profile picture + email (read-only) */}
+        <div className="mb-6 flex items-center gap-4 border-b border-zinc-100 pb-6 dark:border-zinc-800">
+          {profile?.image && (
             <img
-              src={session.user.image}
+              src={profile.image}
               alt=""
-              className="mx-auto mb-4 h-16 w-16 rounded-full border-2 border-zinc-200 dark:border-zinc-700"
+              className="h-14 w-14 rounded-full border-2 border-zinc-200 dark:border-zinc-700"
             />
           )}
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
-            Complete your profile
-          </h1>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            Review and confirm your details to get started
-          </p>
+          <div>
+            <p className="font-medium text-zinc-900 dark:text-zinc-50">
+              {profile?.name || session?.user?.name || "User"}
+            </p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+              {profile?.email || session?.user?.email}
+            </p>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -204,12 +238,13 @@ export default function OnboardingPage() {
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
+                setSaved(false);
                 setFieldErrors((prev) => ({ ...prev, name: "" }));
               }}
               placeholder="John Doe"
               maxLength={100}
               className="w-full rounded-lg border border-zinc-300 px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-400"
-              disabled={loading}
+              disabled={saving}
             />
             {fieldErrors.name && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.name}</p>
@@ -231,7 +266,7 @@ export default function OnboardingPage() {
                 maxLength={USERNAME_MAX_LENGTH}
                 className="w-full rounded-lg border border-zinc-300 px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-400"
                 autoComplete="username"
-                disabled={loading}
+                disabled={saving}
               />
               {availability === "checking" && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-400">
@@ -279,44 +314,34 @@ export default function OnboardingPage() {
                 placeholder="98765 43210"
                 maxLength={10}
                 className="w-full rounded-r-lg border border-zinc-300 px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-400"
-                disabled={loading}
+                disabled={saving}
               />
             </div>
-            <div className="mt-1 flex items-center justify-between">
-              <p className="text-xs text-zinc-400">
-                Friends can find you by this number
-              </p>
-              {phone && (
-                <span className="text-xs text-zinc-400">
-                  {phone.length}/10
-                </span>
-              )}
-            </div>
+            <p className="mt-1 text-xs text-zinc-400">
+              Friends can find you by this number
+            </p>
             {fieldErrors.phone && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.phone}</p>
             )}
           </div>
 
           {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
-          {success && (
-            <p className="text-sm text-green-600 dark:text-green-400">
-              Profile saved! Redirecting...
-            </p>
+          {saved && (
+            <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+              <Check size={16} />
+              Changes saved successfully
+            </div>
           )}
 
           <button
             type="submit"
-            disabled={loading || availability === "taken"}
+            disabled={saving || availability === "taken" || !hasChanges()}
             className="w-full rounded-lg bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
           >
-            {loading ? "Saving..." : "Continue"}
+            {saving ? "Saving..." : "Save changes"}
           </button>
         </form>
-
-        <p className="text-center text-xs text-zinc-400">
-          Signed in as {session.user.email}
-        </p>
-      </main>
+      </div>
     </div>
   );
 }

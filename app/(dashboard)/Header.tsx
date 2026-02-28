@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { Users, UserPlus, LogOut } from "lucide-react";
+import { Users, UserPlus, Settings, LogOut } from "lucide-react";
 
 export function Header() {
   return (
@@ -23,6 +23,12 @@ export function Header() {
             className="flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
           >
             <UserPlus size={18} /> Friends
+          </Link>
+          <Link
+            href="/settings"
+            className="flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+          >
+            <Settings size={18} /> Settings
           </Link>
           <button
             type="button"
