@@ -10,7 +10,7 @@ export default async function InvitePage({
   params: Promise<{ code: string }>;
 }) {
   const session = await auth();
-  if (!session?.user?.id) redirect("/signin");
+  if (!session?.user?.id) redirect("/");
   const { code } = await params;
 
   const db = await connectDB();

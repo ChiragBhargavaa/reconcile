@@ -60,7 +60,7 @@ export default function OnboardingPage() {
   }
 
   if (!session) {
-    router.replace("/signin");
+    router.replace("/");
     return null;
   }
 
@@ -164,7 +164,7 @@ export default function OnboardingPage() {
       }
       setSuccess(true);
       await update();
-      router.replace("/");
+      router.replace("/dashboard");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

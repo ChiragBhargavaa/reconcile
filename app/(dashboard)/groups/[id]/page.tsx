@@ -27,7 +27,7 @@ export default async function GroupPage({
     return (
       <div>
         <p>Group not found</p>
-        <Link href="/" className="text-blue-600 hover:underline">
+        <Link href="/dashboard" className="text-blue-600 hover:underline">
           Back to groups
         </Link>
       </div>
@@ -68,7 +68,7 @@ export default async function GroupPage({
 
       <div className="order-1 min-w-0 flex-1 lg:order-2">
         <Link
-          href="/"
+          href="/dashboard"
           className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
         >
           <ArrowLeft size={16} /> Back

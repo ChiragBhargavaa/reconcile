@@ -73,7 +73,7 @@ export default function NewGroupPage() {
   return (
     <div>
       <Link
-        href="/"
+        href="/dashboard"
         className="mb-4 inline-flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
       >
         <ArrowLeft size={16} /> Back
@@ -182,7 +182,7 @@ export default function NewGroupPage() {
             {loading ? "Creating..." : "Create group"}
           </button>
           <Link
-            href="/"
+            href="/dashboard"
             className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
           >
             Cancel

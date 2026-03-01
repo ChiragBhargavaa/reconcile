@@ -7,6 +7,7 @@ const onboardingPath = "/onboarding";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  if (pathname === "/") return NextResponse.next();
   if (publicPaths.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
@@ -16,18 +17,17 @@ export async function middleware(request: NextRequest) {
   });
   if (!token) {
     if (pathname === "/signin") return NextResponse.next();
-    const signin = new URL("/signin", request.url);
-    signin.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(signin);
+    const url = new URL("/", request.url);
+    return NextResponse.redirect(url);
   }
   if (pathname === "/signin") {
-    return NextResponse.redirect(new URL(token.username ? "/" : onboardingPath, request.url));
+    return NextResponse.redirect(new URL(token.username ? "/dashboard" : onboardingPath, request.url));
   }
   if (!token.username && pathname !== onboardingPath && !pathname.startsWith("/api/")) {
     return NextResponse.redirect(new URL(onboardingPath, request.url));
   }
   if (token.username && pathname === onboardingPath) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
   return NextResponse.next();
 }
