@@ -24,33 +24,13 @@ export default function LandingPage() {
 
   return (
     <div
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden"
-      style={{
-        backgroundImage: "url('/bg.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
+      className="relative flex min-h-screen flex-col items-center overflow-hidden"
+      style={{}}
     >
-      <div className="absolute inset-0 bg-black/30" />
+      <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center" />
 
-      <main className="relative z-10 flex w-full max-w-lg flex-col items-center px-6 text-center">
-        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md ring-1 ring-white/20">
-          <svg
-            className="h-8 w-8 text-purple-300"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-        </div>
+      <main className="relative z-10 flex flex-1 w-full max-w-lg flex-col justify-center items-center px-6 text-center">
+   
 
         <h1 className="text-5xl font-bold tracking-tight text-white sm:text-6xl">
           Reconcile
@@ -63,7 +43,7 @@ export default function LandingPage() {
           <button
             type="button"
             onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-            className="flex w-full items-center justify-center gap-3 rounded-xl bg-white px-6 py-3.5 text-[15px] font-medium text-zinc-800 shadow-lg shadow-black/20 transition-all duration-200 hover:bg-zinc-100 hover:shadow-xl hover:shadow-black/30 active:scale-[0.98]"
+            className="flex w-full items-center justify-center gap-3 rounded-xl bg-white px-6 py-3.5 text-[15px] font-medium text-zinc-800 transition-all duration-200 hover:bg-zinc-100 active:scale-[0.98]"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
@@ -117,9 +97,9 @@ export default function LandingPage() {
         </div>
       </main>
 
-      <footer className="relative z-10 mt-auto pb-6 pt-12">
-        <p className="text-xs text-zinc-500">
-          By signing up, you agree to our terms of service.
+      <footer className="relative z-10 mt-auto pb-6 pt-12 flex flex-col items-center gap-2">
+        <p className="text-xs text-gray-300">
+          © 2026 Reconcile · Created by Chirag Bhargava
         </p>
       </footer>
     </div>

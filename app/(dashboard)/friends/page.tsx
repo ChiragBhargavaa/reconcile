@@ -48,8 +48,8 @@ export default async function FriendsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">Friends</h1>
-      <p className="mt-1 text-zinc-600 dark:text-zinc-400">
+      <h1 className="text-2xl font-bold text-zinc-900">Friends</h1>
+      <p className="mt-1 text-zinc-800">
         Manage your friends, accept requests, and find new people
       </p>
       <FriendsClient

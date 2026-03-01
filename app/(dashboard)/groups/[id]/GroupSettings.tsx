@@ -148,7 +148,7 @@ export function GroupSettings({
       <button
         type="button"
         onClick={() => setShow(true)}
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-500 transition hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
+        className="inline-flex items-center gap-1.5 text-[clamp(12px,2vh,16px)] font-medium text-zinc-600 transition hover:text-zinc-800"
       >
         <Settings size={14} /> Group settings
       </button>
@@ -156,9 +156,9 @@ export function GroupSettings({
   }
 
   return (
-    <div className="mt-4 space-y-4 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="mt-4 space-y-4 rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Group settings</h3>
+        <h3 className="text-base font-bold text-zinc-900">Group settings</h3>
         <button
           type="button"
           onClick={() => {
@@ -166,7 +166,7 @@ export function GroupSettings({
             setConfirmDelete(false);
             setError("");
           }}
-          className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+          className="text-xs text-zinc-500 hover:text-zinc-800"
         >
           Close
         </button>
@@ -174,29 +174,29 @@ export function GroupSettings({
 
       {/* Members */}
       <div>
-        <p className="mb-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">Members</p>
+        <p className="mb-2 text-sm font-semibold text-zinc-900">Members</p>
         <ul className="space-y-1">
           {members.map((m) => (
             <li key={m.id} className="flex items-center justify-between rounded-lg px-2 py-1.5">
-              <span className="text-sm text-zinc-900 dark:text-zinc-100">
+              <span className="text-sm text-zinc-900">
                 {m.name} {m.id === currentUserId && <span className="text-xs text-zinc-400">(you)</span>}
               </span>
               {m.id !== currentUserId && members.length > 2 && (
                 confirmRemoveId === m.id ? (
                   <span className="inline-flex items-center gap-1.5">
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400">Sure?</span>
+                    <span className="text-xs text-zinc-600">Sure?</span>
                     <button
                       type="button"
                       onClick={() => { setConfirmRemoveId(null); removeMember(m.id); }}
                       disabled={removingId === m.id}
-                      className="text-xs font-medium text-red-600 hover:text-red-700 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+                      className="text-xs font-medium text-red-400 hover:text-red-500 disabled:opacity-50"
                     >
                       {removingId === m.id ? "Removing..." : "Yes"}
                     </button>
                     <button
                       type="button"
                       onClick={() => setConfirmRemoveId(null)}
-                      className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                      className="text-xs text-zinc-500 hover:text-zinc-800"
                     >
                       No
                     </button>
@@ -206,7 +206,7 @@ export function GroupSettings({
                     type="button"
                     onClick={() => { setError(""); setConfirmRemoveId(m.id); }}
                     disabled={removingId === m.id}
-                    className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-red-600 disabled:opacity-50 dark:hover:text-red-400"
+                    className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-red-400 disabled:opacity-50"
                   >
                     <UserMinus size={12} />
                     Remove
@@ -219,15 +219,15 @@ export function GroupSettings({
       </div>
 
       {/* Duplicate payment check */}
-      <div className="border-t border-zinc-200 pt-4 dark:border-zinc-700">
+      <div className="border-t border-white/15 pt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ShieldCheck size={14} className="text-zinc-500 dark:text-zinc-400" />
+            <ShieldCheck size={14} className="text-zinc-600" />
             <div>
-              <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100">
+              <p className="text-sm font-semibold text-zinc-900">
                 Check for accidental payments
               </p>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-zinc-600">
                 Warns when a new expense matches the last one
               </p>
             </div>
@@ -238,8 +238,8 @@ export function GroupSettings({
             disabled={togglingDupCheck}
             className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors focus:outline-none disabled:opacity-50 ${
               dupCheck
-                ? "bg-emerald-600 dark:bg-emerald-500"
-                : "bg-zinc-300 dark:bg-zinc-600"
+                ? "bg-green-500"
+                : "bg-zinc-400"
             }`}
             role="switch"
             aria-checked={dupCheck}
@@ -255,7 +255,7 @@ export function GroupSettings({
 
       {/* Add member */}
       <div>
-        <p className="mb-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">Add member</p>
+        <p className="mb-2 text-sm font-semibold text-zinc-900">Add member</p>
         <div className="flex flex-wrap gap-2">
           <input
             type="text"
@@ -263,12 +263,12 @@ export function GroupSettings({
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), doSearch())}
             placeholder="Search users..."
-            className="flex-1 min-w-[120px] rounded border border-zinc-300 px-3 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            className="flex-1 min-w-[120px] rounded-xl bg-white/15 backdrop-blur-xl px-3 py-1.5 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
           />
           <select
             value={searchType}
             onChange={(e) => setSearchType(e.target.value as "username" | "email" | "phone")}
-            className="rounded border border-zinc-300 px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            className="rounded-xl bg-white/15 backdrop-blur-xl px-2 py-1.5 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
           >
             <option value="username">Username</option>
             <option value="email">Email</option>
@@ -278,16 +278,16 @@ export function GroupSettings({
             type="button"
             onClick={doSearch}
             disabled={searching}
-            className="inline-flex items-center gap-1 rounded bg-zinc-900 px-3 py-1.5 text-xs text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="inline-flex items-center gap-1 rounded-lg bg-black px-3 py-1.5 text-xs text-white transition hover:bg-black"
           >
             <Search size={12} /> {searching ? "..." : "Search"}
           </button>
         </div>
         {searchResults.length > 0 && (
-          <ul className="mt-2 space-y-1 rounded border border-zinc-200 bg-zinc-50 p-2 dark:border-zinc-700 dark:bg-zinc-800">
+          <ul className="mt-2 space-y-1 rounded-xl bg-white/15 backdrop-blur-xl ring-1 ring-white/20 p-2">
             {searchResults.map((u) => (
               <li key={u.id} className="flex items-center justify-between rounded px-2 py-1 text-sm">
-                <span className="text-zinc-900 dark:text-zinc-100">
+                <span className="text-zinc-900">
                   {u.name || u.username || u.id}
                 </span>
                 {memberIds.has(u.id) ? (
@@ -297,7 +297,7 @@ export function GroupSettings({
                     type="button"
                     onClick={() => addMember(u.id)}
                     disabled={addingId === u.id}
-                    className="inline-flex items-center gap-1 text-xs font-medium text-zinc-600 hover:text-zinc-900 disabled:opacity-50 dark:text-zinc-400 dark:hover:text-zinc-50"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-zinc-600 hover:text-zinc-900 disabled:opacity-50"
                   >
                     <UserPlus size={12} /> {addingId === u.id ? "Adding..." : "Add"}
                   </button>
@@ -309,18 +309,18 @@ export function GroupSettings({
       </div>
 
       {/* Delete group */}
-      <div className="border-t border-zinc-200 pt-4 dark:border-zinc-700">
+      <div className="border-t border-white/15 pt-4">
         {!confirmDelete ? (
           <button
             type="button"
             onClick={() => setConfirmDelete(true)}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-red-600 transition hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-red-400 transition hover:text-red-500"
           >
             <Trash2 size={14} /> Delete group
           </button>
         ) : (
           <div className="space-y-2">
-            <p className="text-xs text-red-600 dark:text-red-400">
+            <p className="text-sm text-red-400">
               Are you sure? This will permanently delete the group and all its expenses.
             </p>
             <div className="flex gap-2">
@@ -328,14 +328,14 @@ export function GroupSettings({
                 type="button"
                 onClick={deleteGroup}
                 disabled={deleting}
-                className="rounded bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                className="rounded bg-red-400 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-500 disabled:opacity-50"
               >
                 {deleting ? "Deleting..." : "Yes, delete"}
               </button>
               <button
                 type="button"
                 onClick={() => setConfirmDelete(false)}
-                className="rounded border border-zinc-300 px-3 py-1.5 text-xs dark:border-zinc-700 dark:text-zinc-300"
+                className="rounded-lg bg-white/15 ring-1 ring-white/20 px-3 py-1.5 text-xs text-zinc-700 hover:bg-white/25"
               >
                 Cancel
               </button>
@@ -344,7 +344,7 @@ export function GroupSettings({
         )}
       </div>
 
-      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-400">{error}</p>}
     </div>
   );
 }

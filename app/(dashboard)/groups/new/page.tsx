@@ -74,14 +74,14 @@ export default function NewGroupPage() {
     <div>
       <Link
         href="/dashboard"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900"
       >
         <ArrowLeft size={16} /> Back
       </Link>
-      <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">Create group</h1>
+      <h1 className="text-2xl font-bold text-zinc-900">Create group</h1>
       <form onSubmit={handleSubmit} className="mt-6 max-w-md space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label htmlFor="name" className="block text-sm font-medium text-zinc-900">
             Group name
           </label>
           <input
@@ -90,15 +90,15 @@ export default function NewGroupPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Trip to Goa"
-            className="mt-1 w-full rounded-lg border border-zinc-300 px-4 py-2 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            className="mt-1 w-full rounded-xl bg-white/15 backdrop-blur-xl px-4 py-2 text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
             autoFocus
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label className="block text-sm font-medium text-zinc-900">
             Add members (optional)
           </label>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-xs text-zinc-600">
             Search by username, email, or phone and add users directly.
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -108,12 +108,12 @@ export default function NewGroupPage() {
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), doSearch())}
               placeholder="Search users..."
-              className="flex-1 min-w-[140px] rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+              className="flex-1 min-w-[140px] rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
             />
             <select
               value={searchType}
               onChange={(e) => setSearchType(e.target.value as "username" | "email" | "phone")}
-              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+              className="rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
             >
               <option value="username">Username</option>
               <option value="email">Email</option>
@@ -123,23 +123,23 @@ export default function NewGroupPage() {
               type="button"
               onClick={doSearch}
               disabled={searching}
-              className="inline-flex items-center gap-1 rounded-lg bg-zinc-900 px-3 py-2 text-sm text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="inline-flex items-center gap-1 rounded-lg bg-black px-3 py-2 text-sm text-white transition hover:bg-black"
             >
               <Search size={16} /> {searching ? "..." : "Search"}
             </button>
           </div>
           {searchResults.length > 0 && (
-            <ul className="mt-2 max-h-40 space-y-1 overflow-y-auto rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-900">
+            <ul className="mt-2 max-h-40 space-y-1 overflow-y-auto rounded-xl bg-white/15 backdrop-blur-2xl ring-1 ring-white/20 p-2">
               {searchResults.map((u) => (
-                <li key={u.id} className="flex items-center justify-between rounded px-2 py-1.5 hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                  <span className="text-sm text-zinc-900 dark:text-zinc-100">
+                  <li key={u.id} className="flex items-center justify-between rounded px-2 py-1.5 hover:bg-white/20">
+                    <span className="text-sm text-zinc-900">
                     {u.name || u.username || u.id}
                   </span>
                   <button
                     type="button"
                     onClick={() => addMember(u)}
                     disabled={selected.has(u.id)}
-                    className="text-sm font-medium text-zinc-600 hover:text-zinc-900 disabled:text-zinc-400 dark:text-zinc-400 dark:hover:text-zinc-50"
+                    className="text-sm font-medium text-zinc-600 hover:text-zinc-900 disabled:text-zinc-400"
                   >
                     {selected.has(u.id) ? "Added" : "+ Add"}
                   </button>
@@ -148,7 +148,7 @@ export default function NewGroupPage() {
             </ul>
           )}
           {hasSearched && !searching && searchResults.length === 0 && (
-            <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="mt-2 text-sm text-zinc-600">
               No users found. Try a different search term.
             </p>
           )}
@@ -157,13 +157,13 @@ export default function NewGroupPage() {
               {Array.from(selected.values()).map((u) => (
                 <span
                   key={u.id}
-                  className="inline-flex items-center gap-1 rounded-full bg-zinc-200 px-3 py-1 text-sm dark:bg-zinc-700"
+                  className="inline-flex items-center gap-1 rounded-full bg-white/15 ring-1 ring-white/20 px-3 py-1 text-sm text-zinc-900"
                 >
                   {u.name || u.username}
                   <button
                     type="button"
                     onClick={() => removeMember(u.id)}
-                    className="ml-1 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+                    className="ml-1 text-zinc-500 hover:text-zinc-900"
                   >
                     ×
                   </button>
@@ -172,18 +172,18 @@ export default function NewGroupPage() {
             </div>
           )}
         </div>
-        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+        {error && <p className="text-sm text-red-400">{error}</p>}
         <div className="flex gap-2">
           <button
             type="submit"
             disabled={loading}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-black disabled:opacity-60"
           >
             {loading ? "Creating..." : "Create group"}
           </button>
           <Link
             href="/dashboard"
-            className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className="rounded-lg bg-white/15 ring-1 ring-white/20 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-white/25"
           >
             Cancel
           </Link>

@@ -20,14 +20,14 @@ export default async function InvitePage({
   });
   if (!link) {
     return (
-      <div className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+      <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+        <h2 className="text-lg font-semibold text-zinc-900">
           Invalid or expired link
         </h2>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mt-2 text-sm text-zinc-800">
           This invite link has expired or doesn&apos;t exist.
         </p>
-        <Link href="/friends" className="mt-4 inline-block text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+        <Link href="/friends" className="mt-4 inline-block text-sm text-zinc-600 hover:underline">
           Go to Friends
         </Link>
       </div>
@@ -37,14 +37,14 @@ export default async function InvitePage({
   const inviterId = link.userId as string;
   if (inviterId === session.user.id) {
     return (
-      <div className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+      <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+        <h2 className="text-lg font-semibold text-zinc-900">
           That&apos;s your own link
         </h2>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mt-2 text-sm text-zinc-800">
           Share this link with others so they can add you as a friend.
         </p>
-        <Link href="/friends" className="mt-4 inline-block text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+        <Link href="/friends" className="mt-4 inline-block text-sm text-zinc-600 hover:underline">
           Go to Friends
         </Link>
       </div>
@@ -58,14 +58,14 @@ export default async function InvitePage({
 
   if (existing?.status === "accepted") {
     return (
-      <div className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+      <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+        <h2 className="text-lg font-semibold text-zinc-900">
           Already friends
         </h2>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mt-2 text-sm text-zinc-800">
           You and {inviter?.name || inviter?.username || "this user"} are already connected.
         </p>
-        <Link href="/friends" className="mt-4 inline-block text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+        <Link href="/friends" className="mt-4 inline-block text-sm text-zinc-600 hover:underline">
           Go to Friends
         </Link>
       </div>
@@ -75,14 +75,14 @@ export default async function InvitePage({
   if (existing?.status === "pending") {
     if (existing.requestedBy === session.user.id) {
       return (
-        <div className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+        <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+          <h2 className="text-lg font-semibold text-zinc-900">
             Request pending
           </h2>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-2 text-sm text-zinc-800">
             You&apos;ve already sent a friend request to {inviter?.name || inviter?.username || "this user"}.
           </p>
-          <Link href="/friends" className="mt-4 inline-block text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+          <Link href="/friends" className="mt-4 inline-block text-sm text-zinc-600 hover:underline">
             Go to Friends
           </Link>
         </div>
@@ -105,14 +105,14 @@ export default async function InvitePage({
   );
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-      <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+    <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+      <h2 className="text-lg font-semibold text-zinc-900">
         You&apos;re now friends!
       </h2>
-      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="mt-2 text-sm text-zinc-800">
         You and {inviter?.name || inviter?.username || "this user"} are now connected. You can add each other to groups and split expenses.
       </p>
-      <Link href="/friends" className="mt-4 inline-block text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+      <Link href="/friends" className="mt-4 inline-block text-sm text-zinc-600 hover:underline">
         Go to Friends
       </Link>
     </div>

@@ -189,38 +189,38 @@ export default function SettingsPage() {
       <div className="flex items-center justify-center py-20">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-zinc-400" />
-          <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">Loading settings...</p>
+          <p className="mt-3 text-sm text-zinc-600">Loading settings...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-lg space-y-8">
+    <div className="mx-auto max-w-lg space-y-8 overflow-y-auto pb-12">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
           Settings
         </h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-zinc-800">
           Manage your profile information
         </p>
       </div>
 
-      <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
         {/* Profile picture + email (read-only) */}
-        <div className="mb-6 flex items-center gap-4 border-b border-zinc-100 pb-6 dark:border-zinc-800">
+        <div className="mb-6 flex items-center gap-4 pb-6">
           {profile?.image && (
             <img
               src={profile.image}
               alt=""
-              className="h-14 w-14 rounded-full border-2 border-zinc-200 dark:border-zinc-700"
+              className="h-14 w-14 rounded-full ring-2 ring-white/30 shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
             />
           )}
           <div>
-            <p className="font-medium text-zinc-900 dark:text-zinc-50">
+            <p className="font-medium text-zinc-900">
               {profile?.name || session?.user?.name || "User"}
             </p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="text-sm text-zinc-800">
               {profile?.email || session?.user?.email}
             </p>
           </div>
@@ -229,7 +229,7 @@ export default function SettingsPage() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name */}
           <div>
-            <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-zinc-900">
               Full name
             </label>
             <input
@@ -243,17 +243,17 @@ export default function SettingsPage() {
               }}
               placeholder="John Doe"
               maxLength={100}
-              className="w-full rounded-lg border border-zinc-300 px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-400"
+              className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-4 py-3 text-zinc-900 placeholder-zinc-500 shadow-inner ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
               disabled={saving}
             />
             {fieldErrors.name && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.name}</p>
+              <p className="mt-1 text-sm text-red-400">{fieldErrors.name}</p>
             )}
           </div>
 
           {/* Username */}
           <div>
-            <label htmlFor="username" className="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label htmlFor="username" className="mb-1.5 block text-sm font-medium text-zinc-900">
               Username
             </label>
             <div className="relative">
@@ -264,7 +264,7 @@ export default function SettingsPage() {
                 onChange={(e) => handleUsernameChange(e.target.value)}
                 placeholder="e.g. john_doe"
                 maxLength={USERNAME_MAX_LENGTH}
-                className="w-full rounded-lg border border-zinc-300 px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-400"
+                className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-4 py-3 text-zinc-900 placeholder-zinc-500 shadow-inner ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
                 autoComplete="username"
                 disabled={saving}
               />
@@ -274,36 +274,36 @@ export default function SettingsPage() {
                 </span>
               )}
               {availability === "available" && !fieldErrors.username && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600 dark:text-green-400">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600">
                   Available
                 </span>
               )}
               {availability === "taken" && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-red-600 dark:text-red-400">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-red-400">
                   Taken
                 </span>
               )}
             </div>
             <div className="mt-1 flex items-center justify-between">
-              <p className="text-xs text-zinc-400">
+              <p className="text-xs text-zinc-600">
                 {USERNAME_MIN_LENGTH}-{USERNAME_MAX_LENGTH} characters, lowercase, numbers, underscores
               </p>
-              <span className="text-xs text-zinc-400">
+              <span className="text-xs text-zinc-600">
                 {username.trim().length}/{USERNAME_MAX_LENGTH}
               </span>
             </div>
             {fieldErrors.username && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.username}</p>
+              <p className="mt-1 text-sm text-red-400">{fieldErrors.username}</p>
             )}
           </div>
 
           {/* Phone */}
           <div>
-            <label htmlFor="phone" className="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label htmlFor="phone" className="mb-1.5 block text-sm font-medium text-zinc-900">
               Mobile number <span className="font-normal text-zinc-400">(optional)</span>
             </label>
             <div className="flex items-stretch">
-              <span className="inline-flex items-center rounded-l-lg border border-r-0 border-zinc-300 bg-zinc-100 px-3 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
+              <span className="inline-flex items-center rounded-l-xl bg-white/15 px-3 text-sm text-zinc-600 backdrop-blur-xl ring-1 ring-white/20">
                 +91
               </span>
               <input
@@ -313,21 +313,21 @@ export default function SettingsPage() {
                 onChange={(e) => handlePhoneChange(e.target.value)}
                 placeholder="98765 43210"
                 maxLength={10}
-                className="w-full rounded-r-lg border border-zinc-300 px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-400"
+                className="w-full rounded-r-xl bg-white/15 backdrop-blur-xl px-4 py-3 text-zinc-900 placeholder-zinc-500 shadow-inner ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
                 disabled={saving}
               />
             </div>
-            <p className="mt-1 text-xs text-zinc-400">
+            <p className="mt-1 text-xs text-zinc-600">
               Friends can find you by this number
             </p>
             {fieldErrors.phone && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.phone}</p>
+              <p className="mt-1 text-sm text-red-400">{fieldErrors.phone}</p>
             )}
           </div>
 
-          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+          {error && <p className="text-sm text-red-400">{error}</p>}
           {saved && (
-            <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+            <div className="flex items-center gap-2 text-sm text-green-600">
               <Check size={16} />
               Changes saved successfully
             </div>
@@ -336,7 +336,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={saving || availability === "taken" || !hasChanges()}
-            className="w-full rounded-lg bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="w-full rounded-lg bg-black text-white px-4 py-3 text-sm font-medium transition hover:bg-black disabled:opacity-60"
           >
             {saving ? "Saving..." : "Save changes"}
           </button>

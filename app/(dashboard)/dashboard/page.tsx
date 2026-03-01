@@ -34,17 +34,17 @@ async function GroupsList() {
   }));
   if (groupsWithMembers.length === 0) {
     return (
-      <div className="rounded-2xl border-2 border-dashed border-zinc-300 bg-white/50 p-16 text-center dark:border-zinc-700 dark:bg-zinc-900/30">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
+      <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-2 ring-dashed ring-white/30 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-16 text-center">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/20">
           <Plus className="h-8 w-8 text-zinc-500 dark:text-zinc-400" />
         </div>
-        <h3 className="mt-4 text-lg font-semibold text-zinc-900 dark:text-zinc-50">No groups yet</h3>
-        <p className="mt-2 max-w-sm mx-auto text-sm text-zinc-600 dark:text-zinc-400">
+        <h3 className="mt-4 text-xl font-bold text-zinc-900">No groups yet</h3>
+        <p className="mt-2 max-w-sm mx-auto text-base text-zinc-600">
           Create a group to start splitting expenses with friends
         </p>
         <Link
           href="/groups/new"
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-black px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-black disabled:opacity-60"
         >
           <Plus size={18} /> Create your first group
         </Link>
@@ -54,10 +54,10 @@ async function GroupsList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">Your groups</h2>
+        <h2 className="text-xl font-bold text-zinc-900">Your groups</h2>
         <Link
           href="/groups/new"
-          className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-800"
+          className="inline-flex items-center gap-2 rounded-lg bg-white/15 backdrop-blur-xl ring-1 ring-white/20 px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-white/25"
         >
           <Plus size={18} /> New group
         </Link>
@@ -67,11 +67,11 @@ async function GroupsList() {
           <li key={g.id}>
             <Link
               href={`/groups/${g.id}`}
-              className="block rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:border-zinc-300 hover:shadow dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700"
+              className="block rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-5 transition hover:bg-white/35"
             >
-              <span className="block font-semibold text-zinc-900 dark:text-zinc-50">{g.name}</span>
-              <span className="mt-1 inline-flex items-center text-sm text-zinc-500 dark:text-zinc-400">
-                <span className="mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-100 text-xs font-medium dark:bg-zinc-800">
+              <span className="block text-lg font-bold text-zinc-900">{g.name}</span>
+              <span className="mt-1 inline-flex items-center text-base font-medium text-zinc-800">
+                <span className="mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/20 text-xs font-medium">
                   {g.members?.length || 0}
                 </span>
                 members
@@ -90,10 +90,10 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-10">
       <section>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
           Hi, {firstName}
         </h1>
-        <p className="mt-1 text-zinc-500 dark:text-zinc-400">@{session?.user?.username}</p>
+        <p className="mt-1 text-zinc-800">@{session?.user?.username}</p>
       </section>
       <section>
         <GroupsList />

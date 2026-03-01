@@ -33,32 +33,46 @@ export function GroupExpenses({ groupId, groupName }: { groupId: string; groupNa
 
   const exportPdf = () => {
     const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.text(groupName, 14, 20);
-    doc.setFontSize(10);
-    doc.text(`Expenses export - ${new Date().toLocaleDateString()}`, 14, 28);
-    let y = 40;
-    const lineHeight = 8;
+    const margin = 14;
+    const maxWidth = doc.internal.pageSize.width - margin * 2;
     const pageHeight = doc.internal.pageSize.height;
+    const lineHeight = 5;
+
+    const addWrappedText = (text: string, x: number, startY: number, fontSize: number): number => {
+      doc.setFontSize(fontSize);
+      const lines: string[] = doc.splitTextToSize(text, maxWidth - (x - margin));
+      let y = startY;
+      for (const line of lines) {
+        if (y > pageHeight - 20) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.text(line, x, y);
+        y += lineHeight;
+      }
+      return y;
+    };
+
+    doc.setFontSize(18);
+    doc.text(groupName, margin, 20);
+    doc.setFontSize(8);
+    doc.text(`Expenses export - ${new Date().toLocaleDateString()}`, margin, 27);
+
+    let y = 35;
     expenses.forEach((e, i) => {
-      if (y > pageHeight - 30) {
+      if (y > pageHeight - 25) {
         doc.addPage();
         y = 20;
       }
       const payer = e.payer?.name || e.payer?.username || "Unknown";
-      doc.text(`${i + 1}. ₹${e.amount.toFixed(2)} - paid by ${payer}`, 14, y);
-      y += lineHeight;
+      y = addWrappedText(`${i + 1}. Rs.${e.amount.toFixed(2)} - paid by ${payer}`, margin, y, 8);
       if (e.note) {
-        doc.setFontSize(9);
-        doc.text(`   Note: ${e.note}`, 14, y);
-        y += lineHeight;
-        doc.setFontSize(10);
+        y = addWrappedText(`   Note: ${e.note}`, margin, y, 7);
       }
-      const split = e.shares.map((s) => `${s.user?.name || s.user?.username || "?"}: ₹${s.amount.toFixed(2)}`).join(", ");
-      doc.text(`   Split: ${split}`, 14, y);
-      y += lineHeight;
-      doc.text(`   Date: ${new Date(e.createdAt).toLocaleDateString()}`, 14, y);
-      y += lineHeight + 4;
+      const split = e.shares.map((s) => `${s.user?.name || s.user?.username || "?"}: Rs.${s.amount.toFixed(2)}`).join(", ");
+      y = addWrappedText(`   Split: ${split}`, margin, y, 7);
+      y = addWrappedText(`   Date: ${new Date(e.createdAt).toLocaleDateString()}`, margin, y, 7);
+      y += 3;
     });
     doc.save(`expenses-${groupName.replace(/\s+/g, "-")}-${new Date().toISOString().slice(0, 10)}.pdf`);
   };
@@ -68,9 +82,9 @@ export function GroupExpenses({ groupId, groupName }: { groupId: string; groupNa
     return (
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Expenses</h2>
+          <h2 className="text-base font-bold text-zinc-800">Expenses</h2>
         </div>
-        <p className="rounded-xl border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700">
+        <p className="rounded-xl border border-dashed border-white/30 bg-white/10 backdrop-blur-xl p-6 text-center text-sm text-zinc-600">
           No expenses yet
         </p>
       </div>
@@ -78,45 +92,45 @@ export function GroupExpenses({ groupId, groupName }: { groupId: string; groupNa
   }
 
   return (
-    <div>
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Expenses</h2>
+    <div className="flex h-full flex-col">
+      <div className="mb-2 flex shrink-0 items-center justify-between">
+        <h2 className="text-base font-bold text-zinc-900">Expenses</h2>
         <button
           type="button"
           onClick={exportPdf}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-sm transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-black px-3 py-1.5 text-xs font-medium text-white transition hover:bg-zinc-800"
         >
           <FileDown size={14} /> Export PDF
         </button>
       </div>
-      <div className="max-h-[calc(100vh-16rem)] overflow-y-auto">
-        <ul className="space-y-3">
-      {expenses.map((e) => (
-        <li
-          key={e.id}
-          className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <span className="font-medium text-zinc-900 dark:text-zinc-50">
-                ₹{e.amount.toFixed(2)}
-              </span>
-              <span className="ml-2 text-sm text-zinc-500 dark:text-zinc-400">
-                paid by {e.payer?.name || e.payer?.username || "Unknown"}
-              </span>
-            </div>
-            <span className="text-xs text-zinc-400">
-              {new Date(e.createdAt).toLocaleDateString()}
-            </span>
-          </div>
-          {e.note && (
-            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{e.note}</p>
-          )}
-          <div className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-            Split: {e.shares.map((s) => `${s.user?.name || s.user?.username || "?"}: ₹${s.amount.toFixed(2)}`).join(", ")}
-          </div>
-        </li>
-      ))}
+      <div className="min-h-0 flex-1 overflow-y-auto rounded-xl pr-1">
+        <ul className="space-y-1.5">
+          {expenses.map((e) => (
+            <li
+              key={e.id}
+              className="rounded-xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] px-3 py-2"
+            >
+              <div className="flex items-center justify-between">
+                <div className="min-w-0 truncate">
+                  <span className="text-sm font-medium text-zinc-900">
+                    ₹{e.amount.toFixed(2)}
+                  </span>
+                  <span className="ml-1.5 text-xs text-zinc-600">
+                    paid by {e.payer?.name || e.payer?.username || "Unknown"}
+                  </span>
+                  {e.note && (
+                    <span className="ml-1.5 text-xs italic text-zinc-500">— {e.note}</span>
+                  )}
+                </div>
+                <span className="ml-2 shrink-0 text-[11px] text-zinc-400">
+                  {new Date(e.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+              <div className="mt-0.5 text-[11px] text-zinc-500">
+                Split: {e.shares.map((s) => `${s.user?.name || s.user?.username || "?"}: ₹${s.amount.toFixed(2)}`).join(", ")}
+              </div>
+            </li>
+          ))}
         </ul>
       </div>
     </div>

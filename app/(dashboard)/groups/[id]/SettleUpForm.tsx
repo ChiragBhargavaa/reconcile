@@ -64,24 +64,24 @@ export function SettleUpForm({
   if (members.length === 0) return null;
 
   return (
-    <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+    <div className="mt-4 border-t border-white/15 pt-4">
       {!show ? (
         <button
           type="button"
           onClick={() => setShow(true)}
-          className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+          className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
         >
           Settle up
         </button>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-2">
-          <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm font-semibold text-zinc-900">
             I paid
           </p>
           <select
             value={receiverId}
             onChange={(e) => setReceiverId(e.target.value)}
-            className="w-full rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
             required
           >
             <option value="">Select person</option>
@@ -98,7 +98,7 @@ export function SettleUpForm({
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="Amount (₹)"
-            className="w-full rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
             required
           />
           <input
@@ -106,14 +106,14 @@ export function SettleUpForm({
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Note (optional)"
-            className="w-full rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
           />
-          {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
+          {error && <p className="text-sm text-red-400">{error}</p>}
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={loading}
-              className="rounded bg-zinc-900 px-3 py-1.5 text-sm text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="rounded-lg bg-black px-3 py-1.5 text-sm text-white transition hover:bg-black disabled:opacity-60"
             >
               {loading ? "Recording..." : "Record"}
             </button>
@@ -123,7 +123,7 @@ export function SettleUpForm({
                 setShow(false);
                 setError("");
               }}
-              className="rounded border border-zinc-300 px-3 py-1.5 text-sm dark:border-zinc-700 dark:text-zinc-300"
+              className="rounded-lg bg-white/15 ring-1 ring-white/20 px-3 py-1.5 text-sm text-zinc-700 hover:bg-white/25"
             >
               Cancel
             </button>
