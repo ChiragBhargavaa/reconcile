@@ -228,7 +228,7 @@ export function AddExpenseForm({
 
       {duplicateWarning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-5">
+          <div className="w-full max-w-sm rounded-2xl bg-white ring-1 ring-zinc-200 shadow-[0_4px_20px_rgba(0,0,0,0.1)] p-5">
             <div className="mb-3 flex items-center gap-2 text-amber-600">
               <AlertTriangle size={20} />
               <h3 className="text-sm font-semibold">Possible duplicate payment</h3>

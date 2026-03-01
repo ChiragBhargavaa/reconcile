@@ -217,10 +217,10 @@ export default function SettingsPage() {
             />
           )}
           <div>
-            <p className="font-medium text-zinc-900">
+            <p className="font-semibold text-zinc-900">
               {profile?.name || session?.user?.name || "User"}
             </p>
-            <p className="text-sm text-zinc-800">
+            <p className="text-sm font-medium text-zinc-800">
               {profile?.email || session?.user?.email}
             </p>
           </div>
@@ -229,7 +229,7 @@ export default function SettingsPage() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name */}
           <div>
-            <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-zinc-900">
+            <label htmlFor="name" className="mb-1.5 block text-sm font-semibold text-zinc-900">
               Full name
             </label>
             <input
@@ -253,7 +253,7 @@ export default function SettingsPage() {
 
           {/* Username */}
           <div>
-            <label htmlFor="username" className="mb-1.5 block text-sm font-medium text-zinc-900">
+            <label htmlFor="username" className="mb-1.5 block text-sm font-semibold text-zinc-900">
               Username
             </label>
             <div className="relative">
@@ -299,7 +299,7 @@ export default function SettingsPage() {
 
           {/* Phone */}
           <div>
-            <label htmlFor="phone" className="mb-1.5 block text-sm font-medium text-zinc-900">
+            <label htmlFor="phone" className="mb-1.5 block text-sm font-semibold text-zinc-900">
               Mobile number <span className="font-normal text-zinc-400">(optional)</span>
             </label>
             <div className="flex items-stretch">

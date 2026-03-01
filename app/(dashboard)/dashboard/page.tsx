@@ -57,7 +57,7 @@ async function GroupsList() {
         <h2 className="text-xl font-bold text-zinc-900">Your groups</h2>
         <Link
           href="/groups/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-white/15 backdrop-blur-xl ring-1 ring-white/20 px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-white/25"
+          className="inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800"
         >
           <Plus size={18} /> New group
         </Link>
@@ -70,11 +70,8 @@ async function GroupsList() {
               className="block rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-5 transition hover:bg-white/35"
             >
               <span className="block text-lg font-bold text-zinc-900">{g.name}</span>
-              <span className="mt-1 inline-flex items-center text-base font-medium text-zinc-800">
-                <span className="mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/20 text-xs font-medium">
-                  {g.members?.length || 0}
-                </span>
-                members
+              <span className="mt-1 inline-flex items-center rounded-full bg-cyan-50 px-3 py-0.5 text-sm font-medium text-zinc-800">
+                {g.members?.length || 0} members
               </span>
             </Link>
           </li>

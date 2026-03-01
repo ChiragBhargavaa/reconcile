@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Search } from "lucide-react";
@@ -10,25 +10,29 @@ type User = { id: string; name?: string; username?: string };
 export default function NewGroupPage() {
   const [name, setName] = useState("");
   const [search, setSearch] = useState("");
-  const [searchType, setSearchType] = useState<"username" | "email" | "phone">("username");
-  const [searchResults, setSearchResults] = useState<User[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [friends, setFriends] = useState<User[]>([]);
+  const [loadingFriends, setLoadingFriends] = useState(true);
   const [selected, setSelected] = useState<Map<string, User>>(new Map());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const doSearch = () => {
-    if (!search.trim() || search.trim().length < 2) return;
-    setSearching(true);
-    setHasSearched(true);
-    fetch(`/api/users?q=${encodeURIComponent(search.trim())}&type=${searchType}`)
+  useEffect(() => {
+    fetch("/api/friends")
       .then((r) => r.json())
-      .then((data) => setSearchResults(Array.isArray(data) ? data : []))
-      .catch(() => setSearchResults([]))
-      .finally(() => setSearching(false));
-  };
+      .then((data) => setFriends(Array.isArray(data) ? data : []))
+      .catch(() => setFriends([]))
+      .finally(() => setLoadingFriends(false));
+  }, []);
+
+  const query = search.trim().toLowerCase();
+  const filtered = friends.filter(
+    (f) =>
+      !selected.has(f.id) &&
+      (f.name?.toLowerCase().includes(query) ||
+        f.username?.toLowerCase().includes(query) ||
+        !query)
+  );
 
   const addMember = (u: User) => {
     setSelected((m) => new Map(m).set(u.id, u));
@@ -99,59 +103,50 @@ export default function NewGroupPage() {
             Add members (optional)
           </label>
           <p className="mt-1 text-xs text-zinc-600">
-            Search by username, email, or phone and add users directly.
+            Only friends can be added to a group.
           </p>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="mt-2 flex items-center gap-2">
+            <Search size={16} className="text-zinc-400" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), doSearch())}
-              placeholder="Search users..."
+              placeholder="Search friends..."
               className="flex-1 min-w-[140px] rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
             />
-            <select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value as "username" | "email" | "phone")}
-              className="rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
-            >
-              <option value="username">Username</option>
-              <option value="email">Email</option>
-              <option value="phone">Phone</option>
-            </select>
-            <button
-              type="button"
-              onClick={doSearch}
-              disabled={searching}
-              className="inline-flex items-center gap-1 rounded-lg bg-black px-3 py-2 text-sm text-white transition hover:bg-black"
-            >
-              <Search size={16} /> {searching ? "..." : "Search"}
-            </button>
           </div>
-          {searchResults.length > 0 && (
+          {loadingFriends ? (
+            <p className="mt-2 text-sm text-zinc-500">Loading friends...</p>
+          ) : filtered.length > 0 ? (
             <ul className="mt-2 max-h-40 space-y-1 overflow-y-auto rounded-xl bg-white/15 backdrop-blur-2xl ring-1 ring-white/20 p-2">
-              {searchResults.map((u) => (
-                  <li key={u.id} className="flex items-center justify-between rounded px-2 py-1.5 hover:bg-white/20">
-                    <span className="text-sm text-zinc-900">
+              {filtered.map((u) => (
+                <li key={u.id} className="flex items-center justify-between rounded px-2 py-1.5 hover:bg-white/20">
+                  <span className="text-sm text-zinc-900">
                     {u.name || u.username || u.id}
                   </span>
                   <button
                     type="button"
                     onClick={() => addMember(u)}
-                    disabled={selected.has(u.id)}
-                    className="text-sm font-medium text-zinc-600 hover:text-zinc-900 disabled:text-zinc-400"
+                    className="text-sm font-medium text-zinc-600 hover:text-zinc-900"
                   >
-                    {selected.has(u.id) ? "Added" : "+ Add"}
+                    + Add
                   </button>
                 </li>
               ))}
             </ul>
-          )}
-          {hasSearched && !searching && searchResults.length === 0 && (
+          ) : friends.length === 0 ? (
             <p className="mt-2 text-sm text-zinc-600">
-              No users found. Try a different search term.
+              No friends yet. Add friends first to include them in a group.
             </p>
-          )}
+          ) : selected.size === friends.length ? (
+            <p className="mt-2 text-sm text-zinc-600">
+              All friends have been added.
+            </p>
+          ) : query ? (
+            <p className="mt-2 text-sm text-zinc-600">
+              No friends match &ldquo;{search.trim()}&rdquo;.
+            </p>
+          ) : null}
           {selected.size > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
               {Array.from(selected.values()).map((u) => (

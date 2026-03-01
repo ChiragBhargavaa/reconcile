@@ -55,6 +55,36 @@ export async function POST(request: Request) {
   }
   const allMemberIds = Array.from(new Set([session.user.id, ...memberIds]));
   const db = await connectDB();
+
+  const otherIds = allMemberIds.filter((id) => id !== session.user.id);
+  if (otherIds.length > 0) {
+    const friendConns = await db
+      .collection("connections")
+      .find({
+        status: "accepted",
+        $or: otherIds.map((uid) => {
+          const [u1, u2] =
+            session.user.id < uid
+              ? [session.user.id, uid]
+              : [uid, session.user.id];
+          return { userId1: u1, userId2: u2 };
+        }),
+      })
+      .toArray();
+    const friendSet = new Set(
+      friendConns.map((c) =>
+        c.userId1 === session.user.id ? c.userId2 : c.userId1
+      )
+    );
+    const nonFriends = otherIds.filter((id) => !friendSet.has(id));
+    if (nonFriends.length > 0) {
+      return NextResponse.json(
+        { error: "You can only add friends to a group" },
+        { status: 403 }
+      );
+    }
+  }
+
   const { insertedId } = await db.collection("groups").insertOne({
     name,
     createdBy: session.user.id,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, UserMinus, UserPlus, Search, Settings, ShieldCheck } from "lucide-react";
 
@@ -30,12 +30,31 @@ export function GroupSettings({
   const [togglingDupCheck, setTogglingDupCheck] = useState(false);
 
   const [search, setSearch] = useState("");
-  const [searchType, setSearchType] = useState<"username" | "email" | "phone">("username");
-  const [searchResults, setSearchResults] = useState<SearchUser[]>([]);
-  const [searching, setSearching] = useState(false);
+  const [friends, setFriends] = useState<SearchUser[]>([]);
+  const [loadingFriends, setLoadingFriends] = useState(false);
   const [addingId, setAddingId] = useState<string | null>(null);
 
   const memberIds = new Set(members.map((m) => m.id));
+
+  useEffect(() => {
+    if (show && friends.length === 0) {
+      setLoadingFriends(true);
+      fetch("/api/friends")
+        .then((r) => r.json())
+        .then((data) => setFriends(Array.isArray(data) ? data : []))
+        .catch(() => setFriends([]))
+        .finally(() => setLoadingFriends(false));
+    }
+  }, [show, friends.length]);
+
+  const query = search.trim().toLowerCase();
+  const filteredFriends = friends.filter(
+    (f) =>
+      !memberIds.has(f.id) &&
+      (f.name?.toLowerCase().includes(query) ||
+        f.username?.toLowerCase().includes(query) ||
+        !query)
+  );
 
   const toggleDuplicateCheck = async () => {
     setTogglingDupCheck(true);
@@ -103,22 +122,6 @@ export function GroupSettings({
     }
   };
 
-  const doSearch = async () => {
-    if (!search.trim() || search.trim().length < 2) return;
-    setSearching(true);
-    try {
-      const res = await fetch(
-        `/api/users?q=${encodeURIComponent(search.trim())}&type=${searchType}`
-      );
-      const data = await res.json();
-      setSearchResults(Array.isArray(data) ? data : []);
-    } catch {
-      setSearchResults([]);
-    } finally {
-      setSearching(false);
-    }
-  };
-
   const addMember = async (userId: string) => {
     setAddingId(userId);
     setError("");
@@ -134,7 +137,6 @@ export function GroupSettings({
         setError(data.error || "Failed to add member");
         return;
       }
-      setSearchResults((r) => r.filter((u) => u.id !== userId));
       router.refresh();
     } catch {
       setError("Something went wrong");
@@ -256,56 +258,50 @@ export function GroupSettings({
       {/* Add member */}
       <div>
         <p className="mb-2 text-sm font-semibold text-zinc-900">Add member</p>
-        <div className="flex flex-wrap gap-2">
+        <p className="mb-2 text-xs text-zinc-600">Only friends can be added to this group.</p>
+        <div className="flex items-center gap-2">
+          <Search size={14} className="text-zinc-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), doSearch())}
-            placeholder="Search users..."
+            placeholder="Search friends..."
             className="flex-1 min-w-[120px] rounded-xl bg-white/15 backdrop-blur-xl px-3 py-1.5 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
           />
-          <select
-            value={searchType}
-            onChange={(e) => setSearchType(e.target.value as "username" | "email" | "phone")}
-            className="rounded-xl bg-white/15 backdrop-blur-xl px-2 py-1.5 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
-          >
-            <option value="username">Username</option>
-            <option value="email">Email</option>
-            <option value="phone">Phone</option>
-          </select>
-          <button
-            type="button"
-            onClick={doSearch}
-            disabled={searching}
-            className="inline-flex items-center gap-1 rounded-lg bg-black px-3 py-1.5 text-xs text-white transition hover:bg-black"
-          >
-            <Search size={12} /> {searching ? "..." : "Search"}
-          </button>
         </div>
-        {searchResults.length > 0 && (
+        {loadingFriends ? (
+          <p className="mt-2 text-xs text-zinc-500">Loading friends...</p>
+        ) : filteredFriends.length > 0 ? (
           <ul className="mt-2 space-y-1 rounded-xl bg-white/15 backdrop-blur-xl ring-1 ring-white/20 p-2">
-            {searchResults.map((u) => (
+            {filteredFriends.map((u) => (
               <li key={u.id} className="flex items-center justify-between rounded px-2 py-1 text-sm">
                 <span className="text-zinc-900">
                   {u.name || u.username || u.id}
                 </span>
-                {memberIds.has(u.id) ? (
-                  <span className="text-xs text-zinc-400">Already in group</span>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => addMember(u.id)}
-                    disabled={addingId === u.id}
-                    className="inline-flex items-center gap-1 text-xs font-medium text-zinc-600 hover:text-zinc-900 disabled:opacity-50"
-                  >
-                    <UserPlus size={12} /> {addingId === u.id ? "Adding..." : "Add"}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => addMember(u.id)}
+                  disabled={addingId === u.id}
+                  className="inline-flex items-center gap-1 text-xs font-medium text-zinc-600 hover:text-zinc-900 disabled:opacity-50"
+                >
+                  <UserPlus size={12} /> {addingId === u.id ? "Adding..." : "Add"}
+                </button>
               </li>
             ))}
           </ul>
-        )}
+        ) : friends.length === 0 ? (
+          <p className="mt-2 text-xs text-zinc-600">
+            No friends yet. Add friends first to include them in a group.
+          </p>
+        ) : filteredFriends.length === 0 && !query ? (
+          <p className="mt-2 text-xs text-zinc-600">
+            All friends are already in this group.
+          </p>
+        ) : query ? (
+          <p className="mt-2 text-xs text-zinc-600">
+            No friends match &ldquo;{search.trim()}&rdquo;.
+          </p>
+        ) : null}
       </div>
 
       {/* Delete group */}

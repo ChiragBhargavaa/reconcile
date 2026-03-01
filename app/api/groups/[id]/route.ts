@@ -94,6 +94,35 @@ export async function PATCH(
       }
     }
 
+    const newlyAdded = memberIds.filter((mid) => !currentMemberIds.includes(mid));
+    if (newlyAdded.length > 0) {
+      const friendConns = await db
+        .collection("connections")
+        .find({
+          status: "accepted",
+          $or: newlyAdded.map((uid) => {
+            const [u1, u2] =
+              session.user.id < uid
+                ? [session.user.id, uid]
+                : [uid, session.user.id];
+            return { userId1: u1, userId2: u2 };
+          }),
+        })
+        .toArray();
+      const friendSet = new Set(
+        friendConns.map((c) =>
+          c.userId1 === session.user.id ? c.userId2 : c.userId1
+        )
+      );
+      const nonFriends = newlyAdded.filter((id) => !friendSet.has(id));
+      if (nonFriends.length > 0) {
+        return NextResponse.json(
+          { error: "You can only add friends to a group" },
+          { status: 403 }
+        );
+      }
+    }
+
     update.memberIds = Array.from(new Set(memberIds));
   }
   const result = await db.collection("groups").findOneAndUpdate(

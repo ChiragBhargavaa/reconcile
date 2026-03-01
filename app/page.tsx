@@ -17,33 +17,28 @@ export default function LandingPage() {
   if (status === "loading" || status === "authenticated") {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-400 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-600 border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div
-      className="relative flex min-h-screen flex-col items-center overflow-hidden"
-      style={{}}
-    >
-      <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center" />
-
+    <div className="relative flex min-h-screen flex-col items-center overflow-hidden">
       <main className="relative z-10 flex flex-1 w-full max-w-lg flex-col justify-center items-center px-6 text-center">
    
 
-        <h1 className="text-5xl font-bold tracking-tight text-white sm:text-6xl">
+        <h1 className="text-5xl font-bold tracking-tight text-zinc-900 sm:text-6xl">
           Reconcile
         </h1>
-        <p className="mt-4 text-lg leading-relaxed text-zinc-300 sm:text-xl">
-          Split expenses, track balances, and settle up with friends — effortlessly.
+        <p className="mt-4 text-lg leading-relaxed text-zinc-700 sm:text-xl">
+          Split expenses, track balances, and settle up with friends effortlessly.
         </p>
 
         <div className="mt-10 w-full max-w-xs">
           <button
             type="button"
             onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-            className="flex w-full items-center justify-center gap-3 rounded-xl bg-white px-6 py-3.5 text-[15px] font-medium text-zinc-800 transition-all duration-200 hover:bg-zinc-100 active:scale-[0.98]"
+            className="flex w-full items-center justify-center gap-3 rounded-xl bg-white px-6 py-3.5 text-[15px] font-medium text-zinc-800 shadow-md ring-1 ring-zinc-200 transition-all duration-200 hover:bg-zinc-50 active:scale-[0.98]"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
@@ -69,36 +64,36 @@ export default function LandingPage() {
 
         <div className="mt-12 grid grid-cols-3 gap-6 text-center">
           <div className="flex flex-col items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm ring-1 ring-white/15">
-              <svg className="h-5 w-5 text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 ring-1 ring-zinc-300">
+              <svg className="h-5 w-5 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="5" width="20" height="14" rx="2" />
                 <line x1="2" y1="10" x2="22" y2="10" />
               </svg>
             </div>
-            <span className="text-xs font-medium text-zinc-400">Split Bills</span>
+            <span className="text-xs font-medium text-zinc-600">Split Bills</span>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm ring-1 ring-white/15">
-              <svg className="h-5 w-5 text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 ring-1 ring-zinc-300">
+              <svg className="h-5 w-5 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
               </svg>
             </div>
-            <span className="text-xs font-medium text-zinc-400">Track Balances</span>
+            <span className="text-xs font-medium text-zinc-600">Track Balances</span>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm ring-1 ring-white/15">
-              <svg className="h-5 w-5 text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 ring-1 ring-zinc-300">
+              <svg className="h-5 w-5 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                 <polyline points="22 4 12 14.01 9 11.01" />
               </svg>
             </div>
-            <span className="text-xs font-medium text-zinc-400">Settle Up</span>
+            <span className="text-xs font-medium text-zinc-600">Settle Up</span>
           </div>
         </div>
       </main>
 
       <footer className="relative z-10 mt-auto pb-6 pt-12 flex flex-col items-center gap-2">
-        <p className="text-xs text-gray-300">
+        <p className="text-xs text-gray-500">
           © 2026 Reconcile · Created by Chirag Bhargava
         </p>
       </footer>
