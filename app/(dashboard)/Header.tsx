@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { LayoutDashboard, Users, UserPlus, Settings, LogOut, Info } from "lucide-react";
@@ -21,7 +22,7 @@ export function Sidebar() {
         href="/dashboard"
         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-zinc-900 md:mb-6"
       >
-        <span className="text-lg font-bold tracking-tight">R</span>
+        <Image src="/logo.png" alt="Reconcile" width={28} height={28} className="rounded-full" />
       </Link>
 
       <nav className="flex flex-1 flex-row items-center justify-center gap-1 md:flex-col">

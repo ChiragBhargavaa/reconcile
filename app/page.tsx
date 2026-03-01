@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -26,6 +27,8 @@ export default function LandingPage() {
     <div className="relative flex min-h-screen flex-col items-center overflow-hidden">
       <main className="relative z-10 flex flex-1 w-full max-w-lg flex-col justify-center items-center px-6 text-center">
    
+
+        <Image src="/logo.png" alt="Reconcile" width={72} height={72} className="mb-4 rounded-full" />
 
         <h1 className="text-5xl font-bold tracking-tight text-zinc-900 sm:text-6xl">
           Reconcile
