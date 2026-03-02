@@ -3,15 +3,31 @@ import { MongoClient, Db } from "mongodb";
 const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
 const dbName = process.env.MONGODB_DB_NAME || "reconcile";
 
-let client: MongoClient | null = null;
-let db: Db | null = null;
+const globalForMongo = globalThis as typeof globalThis & {
+  _mongoClientPromise?: Promise<MongoClient>;
+};
+
+function getClientPromise(): Promise<MongoClient> {
+  if (!globalForMongo._mongoClientPromise) {
+    const client = new MongoClient(uri);
+    globalForMongo._mongoClientPromise = client.connect();
+  }
+  return globalForMongo._mongoClientPromise;
+}
+
+let indexesEnsured = false;
 
 export async function connectDB(): Promise<Db> {
-  if (db) return db;
-  client = new MongoClient(uri);
-  await client.connect();
-  db = client.db(dbName);
-  await ensureIndexes(db);
+  const client = await getClientPromise();
+  const db = client.db(dbName);
+
+  if (!indexesEnsured) {
+    indexesEnsured = true;
+    ensureIndexes(db).catch(() => {
+      indexesEnsured = false;
+    });
+  }
+
   return db;
 }
 
@@ -28,6 +44,5 @@ async function ensureIndexes(database: Db) {
 }
 
 export async function getDb(): Promise<Db> {
-  if (!db) return connectDB();
-  return db;
+  return connectDB();
 }

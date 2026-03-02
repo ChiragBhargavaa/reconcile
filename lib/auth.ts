@@ -12,49 +12,62 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async signIn({ user }) {
-      if (!user.email) return false;
-      const db = await connectDB();
-      const users = db.collection("users");
-      const existing = await users.findOne({ email: user.email });
-      if (!existing) {
-        await users.insertOne({
-          email: user.email,
-          name: user.name || null,
-          image: user.image || null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        });
-      } else {
-        await users.updateOne(
-          { email: user.email },
-          {
-            $set: {
-              name: user.name || existing.name,
-              image: user.image || existing.image,
-              updatedAt: new Date(),
-            },
-          }
-        );
+      try {
+        if (!user.email) return false;
+        const db = await connectDB();
+        const users = db.collection("users");
+        const existing = await users.findOne({ email: user.email });
+        if (!existing) {
+          await users.insertOne({
+            email: user.email,
+            name: user.name || null,
+            image: user.image || null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+        } else {
+          await users.updateOne(
+            { email: user.email },
+            {
+              $set: {
+                name: user.name || existing.name,
+                image: user.image || existing.image,
+                updatedAt: new Date(),
+              },
+            }
+          );
+        }
+        return true;
+      } catch (e) {
+        console.error("[auth] signIn callback error:", e);
+        return false;
       }
-      return true;
     },
     async jwt({ token, user, trigger }) {
       if (user?.email) {
-        const db = await connectDB();
-        const dbUser = await db.collection("users").findOne({ email: user.email });
-        if (dbUser) {
-          token.userId = dbUser._id.toString();
-          token.username = dbUser.username;
-          token.email = dbUser.email;
+        try {
+          const db = await connectDB();
+          const dbUser = await db.collection("users").findOne({ email: user.email });
+          if (dbUser) {
+            token.userId = dbUser._id.toString();
+            token.username = dbUser.username;
+            token.email = dbUser.email;
+          }
+        } catch (e) {
+          console.error("[auth] jwt callback (sign-in) error:", e);
         }
       }
-      if (token.userId && (trigger === "update" || !token.username)) {
-        const db = await connectDB();
-        const dbUser = await db.collection("users").findOne(
-          { _id: new ObjectId(token.userId as string) },
-          { projection: { username: 1 } }
-        );
-        if (dbUser) token.username = dbUser.username;
+      if (trigger === "update" && token.userId) {
+        try {
+          const db = await connectDB();
+          const dbUser = await db.collection("users").findOne(
+            { _id: new ObjectId(token.userId as string) },
+            { projection: { username: 1 } }
+          );
+          if (dbUser) token.username = dbUser.username;
+        } catch (e) {
+          console.error("[auth] jwt callback (update) error:", e);
+        }
       }
       return token;
     },
