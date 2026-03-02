@@ -7,14 +7,15 @@ export async function POST(request: Request) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const body = await request.json();
   const fromUserId = body.userId;
   if (!fromUserId) {
     return NextResponse.json({ error: "User ID required" }, { status: 400 });
   }
   const db = await connectDB();
-  const userId1 = session.user.id < fromUserId ? session.user.id : fromUserId;
-  const userId2 = session.user.id < fromUserId ? fromUserId : session.user.id;
+  const userId1 = userId < fromUserId ? userId : fromUserId;
+  const userId2 = userId < fromUserId ? fromUserId : userId;
   const result = await db.collection("connections").updateOne(
     { userId1, userId2, status: "pending", requestedBy: fromUserId },
     { $set: { status: "accepted", updatedAt: new Date() } }

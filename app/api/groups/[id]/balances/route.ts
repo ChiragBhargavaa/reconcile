@@ -12,12 +12,13 @@ export async function GET(
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "Invalid group" }, { status: 400 });
   const db = await connectDB();
   const group = await db.collection("groups").findOne({
     _id: new ObjectId(id),
-    memberIds: session.user.id,
+    memberIds: userId,
   });
   if (!group) return NextResponse.json({ error: "Group not found" }, { status: 404 });
 
@@ -35,6 +36,6 @@ export async function GET(
     userMap[u._id.toString()] = { name: u.name, username: u.username };
   });
 
-  const summary = formatBalanceSummary(balances, session.user.id, userMap);
+  const summary = formatBalanceSummary(balances, userId, userMap);
   return NextResponse.json(summary);
 }

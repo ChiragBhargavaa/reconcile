@@ -8,10 +8,11 @@ export async function POST() {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const db = await connectDB();
   const code = createId().slice(0, 8);
   await db.collection("friendlinks").insertOne({
-    userId: session.user.id,
+    userId,
     code,
     expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     createdAt: new Date(),

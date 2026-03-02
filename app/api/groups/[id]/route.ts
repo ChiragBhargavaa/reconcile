@@ -12,12 +12,13 @@ export async function GET(
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "Invalid group" }, { status: 400 });
   const db = await connectDB();
   const group = await db.collection("groups").findOne({
     _id: new ObjectId(id),
-    memberIds: session.user.id,
+    memberIds: userId,
   });
   if (!group) return NextResponse.json({ error: "Group not found" }, { status: 404 });
   const userIds = group.memberIds || [];
@@ -54,6 +55,7 @@ export async function PATCH(
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "Invalid group" }, { status: 400 });
   const body = await request.json();
@@ -68,7 +70,7 @@ export async function PATCH(
   }
   if (Array.isArray(body.memberIds)) {
     const memberIds = (body.memberIds as string[]).filter((id: unknown) => typeof id === "string");
-    if (!memberIds.includes(session.user.id)) {
+    if (!memberIds.includes(userId)) {
       return NextResponse.json({ error: "Cannot remove yourself" }, { status: 400 });
     }
 
@@ -102,16 +104,16 @@ export async function PATCH(
           status: "accepted",
           $or: newlyAdded.map((uid) => {
             const [u1, u2] =
-              session.user.id < uid
-                ? [session.user.id, uid]
-                : [uid, session.user.id];
+              userId < uid
+                ? [userId, uid]
+                : [uid, userId];
             return { userId1: u1, userId2: u2 };
           }),
         })
         .toArray();
       const friendSet = new Set(
         friendConns.map((c) =>
-          c.userId1 === session.user.id ? c.userId2 : c.userId1
+          c.userId1 === userId ? c.userId2 : c.userId1
         )
       );
       const nonFriends = newlyAdded.filter((id) => !friendSet.has(id));
@@ -126,7 +128,7 @@ export async function PATCH(
     update.memberIds = Array.from(new Set(memberIds));
   }
   const result = await db.collection("groups").findOneAndUpdate(
-    { _id: new ObjectId(id), memberIds: session.user.id },
+    { _id: new ObjectId(id), memberIds: userId },
     { $set: update },
     { returnDocument: "after" }
   );
@@ -142,12 +144,13 @@ export async function DELETE(
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "Invalid group" }, { status: 400 });
   const db = await connectDB();
   const result = await db.collection("groups").deleteOne({
     _id: new ObjectId(id),
-    memberIds: session.user.id,
+    memberIds: userId,
   });
   if (result.deletedCount === 0) {
     return NextResponse.json({ error: "Group not found" }, { status: 404 });

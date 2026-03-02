@@ -8,6 +8,7 @@ export async function GET(request: Request) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q");
   const type = searchParams.get("type") || "username"; // username | email | phone
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
       .collection("users")
       .find({
         username: { $regex: `^${trim.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, $options: "i" },
-        _id: { $ne: new ObjectId(session.user.id) },
+        _id: { $ne: new ObjectId(userId) },
       })
       .limit(10)
       .toArray()) as UserDoc[];
@@ -32,7 +33,7 @@ export async function GET(request: Request) {
       .collection("users")
       .find({
         email: { $regex: trim.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" },
-        _id: { $ne: new ObjectId(session.user.id) },
+        _id: { $ne: new ObjectId(userId) },
       })
       .limit(10)
       .toArray()) as UserDoc[];
@@ -43,7 +44,7 @@ export async function GET(request: Request) {
         .collection("users")
         .find({
           phone: { $regex: cleanPhone, $ne: null },
-          _id: { $ne: new ObjectId(session.user.id) },
+          _id: { $ne: new ObjectId(userId) },
         })
         .limit(10)
         .toArray()) as UserDoc[];

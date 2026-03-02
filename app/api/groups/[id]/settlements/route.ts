@@ -11,12 +11,13 @@ export async function GET(
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "Invalid group" }, { status: 400 });
   const db = await connectDB();
   const group = await db.collection("groups").findOne({
     _id: new ObjectId(id),
-    memberIds: session.user.id,
+    memberIds: userId,
   });
   if (!group) return NextResponse.json({ error: "Group not found" }, { status: 404 });
   const settlements = await db
@@ -66,6 +67,7 @@ export async function POST(
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "Invalid group" }, { status: 400 });
   const body = await request.json();
@@ -80,18 +82,18 @@ export async function POST(
   const db = await connectDB();
   const group = await db.collection("groups").findOne({
     _id: new ObjectId(id),
-    memberIds: session.user.id,
+    memberIds: userId,
   });
   if (!group) return NextResponse.json({ error: "Group not found" }, { status: 404 });
 
   const memberIds = (group.memberIds || []) as string[];
-  if (!memberIds.includes(receiverId) || receiverId === session.user.id) {
+  if (!memberIds.includes(receiverId) || receiverId === userId) {
     return NextResponse.json({ error: "Invalid receiver" }, { status: 400 });
   }
 
   const doc = {
     groupId: id,
-    payerId: session.user.id,
+    payerId: userId,
     receiverId,
     amount,
     note,

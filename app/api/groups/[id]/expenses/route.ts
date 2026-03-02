@@ -11,12 +11,13 @@ export async function GET(
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "Invalid group" }, { status: 400 });
   const db = await connectDB();
   const group = await db.collection("groups").findOne({
     _id: new ObjectId(id),
-    memberIds: session.user.id,
+    memberIds: userId,
   });
   if (!group) return NextResponse.json({ error: "Group not found" }, { status: 404 });
   const url = new URL(request.url);
@@ -76,6 +77,7 @@ export async function POST(
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "Invalid group" }, { status: 400 });
   const body = await request.json();
@@ -91,7 +93,7 @@ export async function POST(
   const db = await connectDB();
   const group = await db.collection("groups").findOne({
     _id: new ObjectId(id),
-    memberIds: session.user.id,
+    memberIds: userId,
   });
   if (!group) return NextResponse.json({ error: "Group not found" }, { status: 404 });
 
@@ -104,7 +106,7 @@ export async function POST(
     return NextResponse.json({ error: "At least one participant required" }, { status: 400 });
   }
 
-  const payerId = body.payerId && memberIds.includes(body.payerId) ? body.payerId : session.user.id;
+  const payerId = body.payerId && memberIds.includes(body.payerId) ? body.payerId : userId;
 
   if (splitType === "custom") {
     shares = Array.isArray(body.shares)

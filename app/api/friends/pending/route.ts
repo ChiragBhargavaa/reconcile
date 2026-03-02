@@ -8,17 +8,18 @@ export async function GET() {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = session.user.id;
   const db = await connectDB();
   const conns = await db
     .collection("connections")
     .find({
-      $or: [{ userId1: session.user.id }, { userId2: session.user.id }],
+      $or: [{ userId1: userId }, { userId2: userId }],
       status: "pending",
-      requestedBy: { $ne: session.user.id },
+      requestedBy: { $ne: userId },
     })
     .toArray();
   const requesterIds = conns.map((c) =>
-    c.userId1 === session.user.id ? c.userId2 : c.userId1
+    c.userId1 === userId ? c.userId2 : c.userId1
   );
   if (requesterIds.length === 0) return NextResponse.json([]);
   const users = await db
