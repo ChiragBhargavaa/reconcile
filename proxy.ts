@@ -66,9 +66,15 @@ export async function proxy(request: NextRequest) {
   if (publicPaths.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
+  const isSecure = request.nextUrl.protocol === "https:";
+  const cookieName = isSecure
+    ? "__Secure-authjs.session-token"
+    : "authjs.session-token";
   const token = await getToken({
     req: request,
     secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+    cookieName,
+    salt: cookieName,
   });
   if (!token) {
     if (pathname === "/signin") return NextResponse.next();
