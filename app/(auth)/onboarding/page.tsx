@@ -23,13 +23,23 @@ export default function OnboardingPage() {
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
   const initializedRef = useRef(false);
 
+  // #region agent log
+  useEffect(() => { fetch('http://127.0.0.1:7812/ingest/ec8db024-6cf5-46c7-baf1-1c6d9077367c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'22e2f2'},body:JSON.stringify({sessionId:'22e2f2',location:'onboarding/page.tsx:render',message:'Onboarding page render',data:{status,fetching,hasSession:!!session,userId:session?.user?.id,username:session?.user?.username},timestamp:Date.now(),hypothesisId:'H1,H3'})}).catch(()=>{}); }, [status, fetching, session]);
+  // #endregion
+
   useEffect(() => {
     if (status !== "authenticated" || initializedRef.current) return;
     initializedRef.current = true;
 
     async function fetchProfile() {
+      // #region agent log
+      fetch('http://127.0.0.1:7812/ingest/ec8db024-6cf5-46c7-baf1-1c6d9077367c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'22e2f2'},body:JSON.stringify({sessionId:'22e2f2',location:'onboarding/page.tsx:fetchProfile',message:'fetchProfile started',data:{},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
+      // #endregion
       try {
         const res = await fetch("/api/users/me");
+        // #region agent log
+        fetch('http://127.0.0.1:7812/ingest/ec8db024-6cf5-46c7-baf1-1c6d9077367c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'22e2f2'},body:JSON.stringify({sessionId:'22e2f2',location:'onboarding/page.tsx:fetchProfile:response',message:'fetchProfile response',data:{status:res.status,ok:res.ok},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
+        // #endregion
         if (res.ok) {
           const data = await res.json();
           setName(data.name || session?.user?.name || "");

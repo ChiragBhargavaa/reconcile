@@ -1,6 +1,9 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Sidebar } from "./Header";
+// #region agent log
+import { appendFileSync } from "fs";
+// #endregion
 
 export default async function DashboardLayout({
   children,
@@ -8,6 +11,9 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
+  // #region agent log
+  try { appendFileSync('/Users/chikuhome/WebDEvElopment/reconcile/.cursor/debug-22e2f2.log', JSON.stringify({sessionId:'22e2f2',location:'dashboard/layout.tsx',message:'Dashboard layout auth check',data:{hasSession:!!session,userId:session?.user?.id||null,username:session?.user?.username||null},timestamp:Date.now(),hypothesisId:'H5'}) + '\n'); } catch {}
+  // #endregion
   if (!session?.user?.id) redirect("/");
   if (!session.user.username) redirect("/onboarding");
 

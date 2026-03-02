@@ -9,8 +9,15 @@ export default function LandingPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  // #region agent log
+  useEffect(() => { fetch('http://127.0.0.1:7812/ingest/ec8db024-6cf5-46c7-baf1-1c6d9077367c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'22e2f2'},body:JSON.stringify({sessionId:'22e2f2',location:'app/page.tsx:landing',message:'Landing page render',data:{status,hasSession:!!session,userId:session?.user?.id,username:session?.user?.username},timestamp:Date.now(),hypothesisId:'H2,H5'})}).catch(()=>{}); }, [status, session]);
+  // #endregion
+
   useEffect(() => {
     if (status === "authenticated") {
+      // #region agent log
+      fetch('http://127.0.0.1:7812/ingest/ec8db024-6cf5-46c7-baf1-1c6d9077367c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'22e2f2'},body:JSON.stringify({sessionId:'22e2f2',location:'app/page.tsx:redirect',message:'Landing redirecting to /dashboard',data:{userId:session?.user?.id,username:session?.user?.username},timestamp:Date.now(),hypothesisId:'H2,H5'})}).catch(()=>{});
+      // #endregion
       router.replace("/dashboard");
     }
   }, [status, router]);

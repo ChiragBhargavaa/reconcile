@@ -2,6 +2,10 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import { connectDB } from "./db";
 import { ObjectId } from "mongodb";
+// #region agent log
+import { appendFileSync } from "fs";
+const _dbgLog = (msg: string, data: Record<string, unknown>) => { try { appendFileSync('/Users/chikuhome/WebDEvElopment/reconcile/.cursor/debug-22e2f2.log', JSON.stringify({sessionId:'22e2f2',location:'lib/auth.ts',message:msg,data,timestamp:Date.now(),hypothesisId:'H4'}) + '\n'); } catch {} };
+// #endregion
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -39,6 +43,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true;
     },
     async jwt({ token, user, trigger }) {
+      // #region agent log
+      _dbgLog('jwt callback entry', { trigger: trigger || 'none', hasUser: !!user, userEmail: user?.email || null, tokenUserId: token.userId as string || null, tokenUsername: token.username as string || null });
+      // #endregion
       if (user?.email) {
         const db = await connectDB();
         const dbUser = await db.collection("users").findOne({ email: user.email });
@@ -47,6 +54,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.username = dbUser.username;
           token.email = dbUser.email;
         }
+        // #region agent log
+        _dbgLog('jwt: initial sign-in lookup', { email: user.email, found: !!dbUser, userId: token.userId as string || null, username: token.username as string || null });
+        // #endregion
       }
       if (token.userId && (trigger === "update" || !token.username)) {
         const db = await connectDB();
@@ -55,6 +65,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           { projection: { username: 1 } }
         );
         if (dbUser) token.username = dbUser.username;
+        // #region agent log
+        _dbgLog('jwt: username refresh', { trigger: trigger || 'none', userId: token.userId as string, usernameResult: token.username as string || null });
+        // #endregion
       }
       return token;
     },
