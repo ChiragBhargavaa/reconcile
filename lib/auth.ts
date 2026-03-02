@@ -43,7 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return false;
       }
     },
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user }) {
       if (user?.email) {
         try {
           const db = await connectDB();
@@ -59,8 +59,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         } catch (e) {
           console.error("[auth] jwt callback (sign-in) error:", e);
         }
+        return token;
       }
-      if (token.userId && (trigger === "update" || !token.username)) {
+      if (token.userId) {
         try {
           const db = await connectDB();
           const dbUser = await db.collection("users").findOne(
@@ -74,7 +75,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             token.username = undefined;
           }
         } catch (e) {
-          console.error("[auth] jwt callback (refresh) error:", e);
+          console.error("[auth] jwt callback (verify) error:", e);
         }
       }
       return token;

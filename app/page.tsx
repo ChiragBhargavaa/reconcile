@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -11,11 +11,23 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.replace("/dashboard");
+      if (session?.user?.id) {
+        router.replace("/dashboard");
+      } else {
+        signOut({ redirect: false });
+      }
     }
-  }, [status, router]);
+  }, [status, session, router]);
 
-  if (status === "loading" || status === "authenticated") {
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-600 border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (status === "authenticated" && session?.user?.id) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-600 border-t-transparent" />
