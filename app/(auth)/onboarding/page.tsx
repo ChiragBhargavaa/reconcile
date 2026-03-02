@@ -181,7 +181,6 @@ export default function OnboardingPage() {
             <img
               src={session.user.image}
               alt=""
-              referrerPolicy="no-referrer"
               className="mx-auto mb-4 h-16 w-16 rounded-full ring-2 ring-white/30 shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
             />
           )}
