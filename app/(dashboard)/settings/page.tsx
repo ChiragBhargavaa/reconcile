@@ -213,6 +213,7 @@ export default function SettingsPage() {
             <img
               src={profile.image}
               alt=""
+              referrerPolicy="no-referrer"
               className="h-14 w-14 rounded-full ring-2 ring-white/30 shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
             />
           )}

@@ -11,7 +11,7 @@ const store = new Map<string, RateLimitRecord>();
 
 const WINDOW = 60 * 1000;
 const API_LIMIT = 60;
-const AUTH_LIMIT = 10;
+const AUTH_LIMIT = 30;
 
 function getRateLimit(path: string) {
   if (path.startsWith("/api/auth")) return AUTH_LIMIT;
