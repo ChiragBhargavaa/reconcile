@@ -52,21 +52,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             token.userId = dbUser._id.toString();
             token.username = dbUser.username;
             token.email = dbUser.email;
+          } else {
+            token.userId = undefined;
+            token.username = undefined;
           }
         } catch (e) {
           console.error("[auth] jwt callback (sign-in) error:", e);
         }
       }
-      if (trigger === "update" && token.userId) {
+      if (token.userId && (trigger === "update" || !token.username)) {
         try {
           const db = await connectDB();
           const dbUser = await db.collection("users").findOne(
             { _id: new ObjectId(token.userId as string) },
             { projection: { username: 1 } }
           );
-          if (dbUser) token.username = dbUser.username;
+          if (dbUser) {
+            token.username = dbUser.username;
+          } else {
+            token.userId = undefined;
+            token.username = undefined;
+          }
         } catch (e) {
-          console.error("[auth] jwt callback (update) error:", e);
+          console.error("[auth] jwt callback (refresh) error:", e);
         }
       }
       return token;

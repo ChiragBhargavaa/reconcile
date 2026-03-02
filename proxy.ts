@@ -54,8 +54,7 @@ function rateLimit(req: NextRequest): NextResponse | null {
   return null;
 }
 
-const publicPaths = ["/api/auth", "/api/debug"];
-const onboardingPath = "/onboarding";
+const publicPaths = ["/api/auth", "/onboarding"];
 
 export async function proxy(request: NextRequest) {
   const rateLimitResponse = rateLimit(request);
@@ -78,16 +77,9 @@ export async function proxy(request: NextRequest) {
   });
   if (!token) {
     if (pathname === "/signin") return NextResponse.next();
-    const url = new URL("/", request.url);
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL("/", request.url));
   }
   if (pathname === "/signin") {
-    return NextResponse.redirect(new URL(token.username ? "/dashboard" : onboardingPath, request.url));
-  }
-  if (!token.username && pathname !== onboardingPath && !pathname.startsWith("/api/")) {
-    return NextResponse.redirect(new URL(onboardingPath, request.url));
-  }
-  if (token.username && pathname === onboardingPath) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
   return NextResponse.next();
