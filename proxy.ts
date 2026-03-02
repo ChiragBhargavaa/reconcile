@@ -57,7 +57,7 @@ function rateLimit(req: NextRequest): NextResponse | null {
 const publicPaths = ["/api/auth"];
 const onboardingPath = "/onboarding";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const rateLimitResponse = rateLimit(request);
   if (rateLimitResponse) return rateLimitResponse;
 
