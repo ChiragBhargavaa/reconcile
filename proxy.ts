@@ -54,7 +54,7 @@ function rateLimit(req: NextRequest): NextResponse | null {
   return null;
 }
 
-const publicPaths = ["/api/auth"];
+const publicPaths = ["/api/auth", "/api/debug"];
 const onboardingPath = "/onboarding";
 
 export async function proxy(request: NextRequest) {
