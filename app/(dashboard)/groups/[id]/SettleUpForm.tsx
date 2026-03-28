@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import {
+  evaluateAddSubtractExpression,
+  formatEvaluatedAmount,
+  looksLikeAddSubExpression,
+} from "@/lib/utils/amountExpression";
 
 type Member = { id: string; name: string };
 
@@ -20,10 +25,26 @@ export function SettleUpForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (!looksLikeAddSubExpression(amount)) return;
+    const t = setTimeout(() => {
+      setAmount((prev) => {
+        if (!looksLikeAddSubExpression(prev)) return prev;
+        const n = evaluateAddSubtractExpression(prev);
+        if (n === null) return prev;
+        return formatEvaluatedAmount(n);
+      });
+    }, 700);
+    return () => clearTimeout(t);
+  }, [amount]);
+
+  const parseAmount = (raw: string) =>
+    evaluateAddSubtractExpression(raw.trim()) ?? parseFloat(raw);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const amt = parseFloat(amount);
+    const amt = parseAmount(amount);
     if (isNaN(amt) || amt <= 0) {
       setError("Enter a valid amount");
       return;
@@ -92,12 +113,11 @@ export function SettleUpForm({
             ))}
           </select>
           <input
-            type="number"
-            step="0.01"
-            min="0"
+            type="text"
+            inputMode="decimal"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder="Amount (₹)"
+            placeholder="Amount (₹), e.g. 100+50"
             className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
             required
           />

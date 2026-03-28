@@ -1,8 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle } from "lucide-react";
+import {
+  evaluateAddSubtractExpression,
+  formatEvaluatedAmount,
+  looksLikeAddSubExpression,
+} from "@/lib/utils/amountExpression";
 
 type Member = { id: string; name: string };
 
@@ -34,6 +39,22 @@ export function AddExpenseForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [duplicateWarning, setDuplicateWarning] = useState<LastExpense | null>(null);
+
+  useEffect(() => {
+    if (!looksLikeAddSubExpression(amount)) return;
+    const t = setTimeout(() => {
+      setAmount((prev) => {
+        if (!looksLikeAddSubExpression(prev)) return prev;
+        const n = evaluateAddSubtractExpression(prev);
+        if (n === null) return prev;
+        return formatEvaluatedAmount(n);
+      });
+    }, 700);
+    return () => clearTimeout(t);
+  }, [amount]);
+
+  const parseAmount = (raw: string) =>
+    evaluateAddSubtractExpression(raw.trim()) ?? parseFloat(raw);
 
   const toggleParticipant = (id: string) => {
     setParticipantIds((s) => {
@@ -80,7 +101,7 @@ export function AddExpenseForm({
     e.preventDefault();
     setError("");
     setDuplicateWarning(null);
-    const amt = parseFloat(amount);
+    const amt = parseAmount(amount);
     if (isNaN(amt) || amt <= 0) {
       setError("Enter a valid amount");
       return;
@@ -122,13 +143,12 @@ export function AddExpenseForm({
               Amount (₹)
             </label>
             <input
-              type="number"
-              step="0.01"
-              min="0"
+              type="text"
+              inputMode="decimal"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               className="mt-[clamp(2px,0.4vh,4px)] w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-[clamp(5px,0.8vh,12px)] text-[clamp(12px,2vh,16px)] text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
-              placeholder="0.00"
+              placeholder="0.00 or 100+50"
               required
             />
           </div>
@@ -256,7 +276,7 @@ export function AddExpenseForm({
                 type="button"
                 onClick={() => {
                   setLoading(true);
-                  submitExpense(parseFloat(amount));
+                  submitExpense(parseAmount(amount));
                 }}
                   className="flex-1 rounded-lg bg-black py-2 text-sm font-medium text-white transition hover:bg-black"
               >
