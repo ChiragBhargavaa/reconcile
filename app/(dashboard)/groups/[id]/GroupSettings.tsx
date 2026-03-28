@@ -11,11 +11,15 @@ export function GroupSettings({
   groupId,
   members,
   currentUserId,
+  adminMemberIds,
+  isGroupAdmin,
   duplicatePaymentCheck: initialDuplicateCheck = true,
 }: {
   groupId: string;
   members: Member[];
   currentUserId: string;
+  adminMemberIds: string[];
+  isGroupAdmin: boolean;
   duplicatePaymentCheck?: boolean;
 }) {
   const router = useRouter();
@@ -181,7 +185,13 @@ export function GroupSettings({
           {members.map((m) => (
             <li key={m.id} className="flex items-center justify-between rounded-lg px-2 py-1.5">
               <span className="text-sm text-zinc-900">
-                {m.name} {m.id === currentUserId && <span className="text-xs text-zinc-400">(you)</span>}
+                {m.name}{" "}
+                {m.id === currentUserId && <span className="text-xs text-zinc-400">(you)</span>}{" "}
+                {adminMemberIds.includes(m.id) && (
+                  <span className="ml-1 inline-flex items-center gap-0.5 rounded-md bg-zinc-200/80 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-700">
+                    <ShieldCheck size={10} aria-hidden /> Admin
+                  </span>
+                )}
               </span>
               {m.id !== currentUserId && members.length > 2 && (
                 confirmRemoveId === m.id ? (
@@ -304,41 +314,43 @@ export function GroupSettings({
         ) : null}
       </div>
 
-      {/* Delete group */}
-      <div className="border-t border-white/15 pt-4">
-        {!confirmDelete ? (
-          <button
-            type="button"
-            onClick={() => setConfirmDelete(true)}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-red-400 transition hover:text-red-500"
-          >
-            <Trash2 size={14} /> Delete group
-          </button>
-        ) : (
-          <div className="space-y-2">
-            <p className="text-sm text-red-400">
-              Are you sure? This will permanently delete the group and all its expenses.
-            </p>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={deleteGroup}
-                disabled={deleting}
-                className="rounded bg-red-400 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-500 disabled:opacity-50"
-              >
-                {deleting ? "Deleting..." : "Yes, delete"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setConfirmDelete(false)}
-                className="rounded-lg bg-white/15 ring-1 ring-white/20 px-3 py-1.5 text-xs text-zinc-700 hover:bg-white/25"
-              >
-                Cancel
-              </button>
+      {/* Delete group — only the group admin (creator) */}
+      {isGroupAdmin && (
+        <div className="border-t border-white/15 pt-4">
+          {!confirmDelete ? (
+            <button
+              type="button"
+              onClick={() => setConfirmDelete(true)}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-red-400 transition hover:text-red-500"
+            >
+              <Trash2 size={14} /> Delete group
+            </button>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-sm text-red-400">
+                Are you sure? This will permanently delete the group and all its expenses.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={deleteGroup}
+                  disabled={deleting}
+                  className="rounded bg-red-400 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-500 disabled:opacity-50"
+                >
+                  {deleting ? "Deleting..." : "Yes, delete"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(false)}
+                  className="rounded-lg bg-white/15 ring-1 ring-white/20 px-3 py-1.5 text-xs text-zinc-700 hover:bg-white/25"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {error && <p className="text-sm text-red-400">{error}</p>}
     </div>

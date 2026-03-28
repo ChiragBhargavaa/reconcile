@@ -4,7 +4,7 @@ import { computeGroupBalances, formatBalanceSummary } from "@/lib/utils/balance"
 import Link from "next/link";
 import { ObjectId } from "mongodb";
 import { ArrowLeft } from "lucide-react";
-import { GroupExpenses } from "./GroupExpenses";
+import { GroupLedgerTabs } from "./GroupLedgerTabs";
 import { AddExpenseForm } from "./AddExpenseForm";
 import { SettleUpForm } from "./SettleUpForm";
 import { GroupSettings } from "./GroupSettings";
@@ -49,6 +49,14 @@ export default async function GroupPage({
 
   const duplicatePaymentCheck = group.settings?.duplicatePaymentCheck !== false;
 
+  const adminMemberIds: string[] =
+    Array.isArray(group.adminIds) && group.adminIds.length > 0
+      ? (group.adminIds as string[])
+      : group.createdBy
+        ? [group.createdBy as string]
+        : [];
+  const isGroupAdmin = adminMemberIds.includes(session.user.id);
+
   const balances = await computeGroupBalances(id);
   const summary = formatBalanceSummary(balances, session.user.id, userMap);
 
@@ -68,6 +76,8 @@ export default async function GroupPage({
             groupId={id}
             members={memberIds.map((m) => ({ id: m, name: userMap[m]?.name || userMap[m]?.username || "Unknown" }))}
             currentUserId={session.user.id}
+            adminMemberIds={adminMemberIds}
+            isGroupAdmin={isGroupAdmin}
             duplicatePaymentCheck={duplicatePaymentCheck}
           />
         </div>
@@ -134,7 +144,7 @@ export default async function GroupPage({
             )}
           </div>
           <div className="min-h-0 flex-1">
-            <GroupExpenses groupId={id} groupName={group.name} />
+            <GroupLedgerTabs groupId={id} groupName={group.name} />
           </div>
         </div>
       </div>

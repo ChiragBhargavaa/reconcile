@@ -74,10 +74,11 @@ export function SettleUpForm({
       setReceiverId("");
       setShow(false);
       window.dispatchEvent(new CustomEvent("expense-added"));
+      window.dispatchEvent(new CustomEvent("settlement-added"));
       router.refresh();
-      setLoading(false);
     } catch {
       setError("Something went wrong");
+    } finally {
       setLoading(false);
     }
   };

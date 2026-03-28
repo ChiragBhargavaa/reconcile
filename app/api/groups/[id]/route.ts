@@ -4,6 +4,16 @@ import { computeGroupBalances } from "@/lib/utils/balance";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
+function resolvedAdminIds(group: Record<string, unknown>): string[] {
+  const raw = group.adminIds;
+  if (Array.isArray(raw) && raw.length > 0) {
+    return raw.filter((id): id is string => typeof id === "string");
+  }
+  const createdBy = group.createdBy;
+  if (typeof createdBy === "string") return [createdBy];
+  return [];
+}
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -31,10 +41,12 @@ export async function GET(
       : [];
   const userMap = Object.fromEntries(users.map((u) => [u._id.toString(), u]));
   const settings = group.settings ?? { duplicatePaymentCheck: true };
+  const adminIds = resolvedAdminIds(group);
   return NextResponse.json({
     id: group._id.toString(),
     name: group.name,
     createdBy: group.createdBy,
+    adminIds,
     memberIds: group.memberIds || [],
     members: (group.memberIds || []).map((id: string) => ({
       id,
@@ -77,6 +89,16 @@ export async function PATCH(
     const currentGroup = await db.collection("groups").findOne({ _id: new ObjectId(id) });
     const currentMemberIds = (currentGroup?.memberIds || []) as string[];
     const removedIds = currentMemberIds.filter((mid) => !memberIds.includes(mid));
+    const adminIds = currentGroup ? resolvedAdminIds(currentGroup) : [];
+    if (
+      removedIds.some((rid) => adminIds.includes(rid)) &&
+      !adminIds.includes(userId)
+    ) {
+      return NextResponse.json(
+        { error: "Only the group admin can remove the group creator from this group" },
+        { status: 403 }
+      );
+    }
 
     if (removedIds.length > 0) {
       const balances = await computeGroupBalances(id);
@@ -148,10 +170,21 @@ export async function DELETE(
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "Invalid group" }, { status: 400 });
   const db = await connectDB();
-  const result = await db.collection("groups").deleteOne({
+  const group = await db.collection("groups").findOne({
     _id: new ObjectId(id),
     memberIds: userId,
   });
+  if (!group) {
+    return NextResponse.json({ error: "Group not found" }, { status: 404 });
+  }
+  const adminIds = resolvedAdminIds(group);
+  if (!adminIds.includes(userId)) {
+    return NextResponse.json(
+      { error: "Only the group admin can delete this group" },
+      { status: 403 }
+    );
+  }
+  const result = await db.collection("groups").deleteOne({ _id: new ObjectId(id) });
   if (result.deletedCount === 0) {
     return NextResponse.json({ error: "Group not found" }, { status: 404 });
   }

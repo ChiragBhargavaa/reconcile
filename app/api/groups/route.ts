@@ -29,6 +29,12 @@ export async function GET() {
     id: g._id.toString(),
     name: g.name,
     createdBy: g.createdBy,
+    adminIds:
+      Array.isArray(g.adminIds) && g.adminIds.length > 0
+        ? g.adminIds
+        : g.createdBy
+          ? [g.createdBy]
+          : [],
     memberIds: g.memberIds || [],
     members: (g.memberIds || []).map((id: string) => ({
       id,
@@ -90,9 +96,15 @@ export async function POST(request: Request) {
   const { insertedId } = await db.collection("groups").insertOne({
     name,
     createdBy: userId,
+    adminIds: [userId],
     memberIds: allMemberIds,
     createdAt: new Date(),
     updatedAt: new Date(),
   });
-  return NextResponse.json({ id: insertedId.toString(), name, memberIds: allMemberIds });
+  return NextResponse.json({
+    id: insertedId.toString(),
+    name,
+    memberIds: allMemberIds,
+    adminIds: [userId],
+  });
 }
