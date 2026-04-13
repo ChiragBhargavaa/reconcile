@@ -37,7 +37,7 @@ async function ensureIndexes(database: Db) {
   await database.collection("users").createIndex({ phone: 1 }, { unique: true, sparse: true });
   await database.collection("groups").createIndex({ memberIds: 1 });
   await database.collection("expenses").createIndex({ groupId: 1, createdAt: -1 });
-  await database.collection("settlements").createIndex({ groupId: 1 });
+  await database.collection("settlements").createIndex({ groupId: 1, createdAt: -1 });
   await database.collection("connections").createIndex({ userId1: 1, userId2: 1 }, { unique: true });
   await database.collection("connections").createIndex({ userId1: 1, status: 1 });
   await database.collection("friendlinks").createIndex({ code: 1 }, { unique: true });

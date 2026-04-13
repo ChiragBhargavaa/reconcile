@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { jsPDF } from "jspdf";
 import { FileDown } from "lucide-react";
 
 type Expense = {
@@ -16,6 +15,7 @@ type Expense = {
 export function GroupExpenses({ groupId, groupName }: { groupId: string; groupName: string }) {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     const fetchExpenses = () => {
@@ -31,50 +31,56 @@ export function GroupExpenses({ groupId, groupName }: { groupId: string; groupNa
     return () => window.removeEventListener("expense-added", handler);
   }, [groupId]);
 
-  const exportPdf = () => {
-    const doc = new jsPDF();
-    const margin = 14;
-    const maxWidth = doc.internal.pageSize.width - margin * 2;
-    const pageHeight = doc.internal.pageSize.height;
-    const lineHeight = 5;
+  const exportPdf = async () => {
+    setExporting(true);
+    try {
+      const { jsPDF } = await import("jspdf");
+      const doc = new jsPDF();
+      const margin = 14;
+      const maxWidth = doc.internal.pageSize.width - margin * 2;
+      const pageHeight = doc.internal.pageSize.height;
+      const lineHeight = 5;
 
-    const addWrappedText = (text: string, x: number, startY: number, fontSize: number): number => {
-      doc.setFontSize(fontSize);
-      const lines: string[] = doc.splitTextToSize(text, maxWidth - (x - margin));
-      let y = startY;
-      for (const line of lines) {
-        if (y > pageHeight - 20) {
+      const addWrappedText = (text: string, x: number, startY: number, fontSize: number): number => {
+        doc.setFontSize(fontSize);
+        const lines: string[] = doc.splitTextToSize(text, maxWidth - (x - margin));
+        let y = startY;
+        for (const line of lines) {
+          if (y > pageHeight - 20) {
+            doc.addPage();
+            y = 20;
+          }
+          doc.text(line, x, y);
+          y += lineHeight;
+        }
+        return y;
+      };
+
+      doc.setFontSize(18);
+      doc.text(groupName, margin, 20);
+      doc.setFontSize(8);
+      doc.text(`Expenses export - ${new Date().toLocaleDateString()}`, margin, 27);
+
+      let y = 35;
+      expenses.forEach((e, i) => {
+        if (y > pageHeight - 25) {
           doc.addPage();
           y = 20;
         }
-        doc.text(line, x, y);
-        y += lineHeight;
-      }
-      return y;
-    };
-
-    doc.setFontSize(18);
-    doc.text(groupName, margin, 20);
-    doc.setFontSize(8);
-    doc.text(`Expenses export - ${new Date().toLocaleDateString()}`, margin, 27);
-
-    let y = 35;
-    expenses.forEach((e, i) => {
-      if (y > pageHeight - 25) {
-        doc.addPage();
-        y = 20;
-      }
-      const payer = e.payer?.name || e.payer?.username || "Unknown";
-      y = addWrappedText(`${i + 1}. Rs.${e.amount.toFixed(2)} - paid by ${payer}`, margin, y, 8);
-      if (e.note) {
-        y = addWrappedText(`   Note: ${e.note}`, margin, y, 7);
-      }
-      const split = e.shares.map((s) => `${s.user?.name || s.user?.username || "?"}: Rs.${s.amount.toFixed(2)}`).join(", ");
-      y = addWrappedText(`   Split: ${split}`, margin, y, 7);
-      y = addWrappedText(`   Date: ${new Date(e.createdAt).toLocaleDateString()}`, margin, y, 7);
-      y += 3;
-    });
-    doc.save(`expenses-${groupName.replace(/\s+/g, "-")}-${new Date().toISOString().slice(0, 10)}.pdf`);
+        const payer = e.payer?.name || e.payer?.username || "Unknown";
+        y = addWrappedText(`${i + 1}. Rs.${e.amount.toFixed(2)} - paid by ${payer}`, margin, y, 8);
+        if (e.note) {
+          y = addWrappedText(`   Note: ${e.note}`, margin, y, 7);
+        }
+        const split = e.shares.map((s) => `${s.user?.name || s.user?.username || "?"}: Rs.${s.amount.toFixed(2)}`).join(", ");
+        y = addWrappedText(`   Split: ${split}`, margin, y, 7);
+        y = addWrappedText(`   Date: ${new Date(e.createdAt).toLocaleDateString()}`, margin, y, 7);
+        y += 3;
+      });
+      doc.save(`expenses-${groupName.replace(/\s+/g, "-")}-${new Date().toISOString().slice(0, 10)}.pdf`);
+    } finally {
+      setExporting(false);
+    }
   };
 
   if (loading) return <p className="text-sm text-zinc-500">Loading expenses...</p>;
@@ -98,9 +104,10 @@ export function GroupExpenses({ groupId, groupName }: { groupId: string; groupNa
         <button
           type="button"
           onClick={exportPdf}
+          disabled={exporting}
           className="inline-flex items-center gap-1.5 rounded-md border-2 border-zinc-900 bg-[#f6d64a] px-3 py-1.5 text-xs font-bold text-zinc-900 shadow-[3px_3px_0_#111] transition hover:-translate-y-0.5"
         >
-          <FileDown size={14} /> Export PDF
+          <FileDown size={14} /> {exporting ? "Preparing..." : "Export PDF"}
         </button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto rounded-xl pr-1">

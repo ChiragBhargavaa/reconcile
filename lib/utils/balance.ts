@@ -14,7 +14,10 @@ export type BalanceEntry = {
  */
 export async function computeGroupBalances(groupId: string): Promise<Map<string, Map<string, number>>> {
   const db = await connectDB();
-  const group = await db.collection("groups").findOne({ _id: new ObjectId(groupId) });
+  const group = await db.collection("groups").findOne(
+    { _id: new ObjectId(groupId) },
+    { projection: { memberIds: 1 } }
+  );
   if (!group) return new Map();
   const memberIds = (group.memberIds || []) as string[];
 
@@ -29,7 +32,22 @@ export async function computeGroupBalances(groupId: string): Promise<Map<string,
     pairBalance.set(key, current + delta);
   }
 
-  const expenses = await db.collection("expenses").find({ groupId }).toArray();
+  const [expenses, settlements] = await Promise.all([
+    db
+      .collection("expenses")
+      .find(
+        { groupId },
+        { projection: { payerId: 1, shares: 1, amount: 1 } }
+      )
+      .toArray(),
+    db
+      .collection("settlements")
+      .find(
+        { groupId },
+        { projection: { payerId: 1, receiverId: 1, amount: 1 } }
+      )
+      .toArray(),
+  ]);
   for (const exp of expenses) {
     const payerId = exp.payerId as string;
     const shares = (exp.shares || []) as { userId: string; amount: number }[];
@@ -41,7 +59,6 @@ export async function computeGroupBalances(groupId: string): Promise<Map<string,
     }
   }
 
-  const settlements = await db.collection("settlements").find({ groupId }).toArray();
   for (const s of settlements) {
     const payerId = s.payerId as string;
     const receiverId = s.receiverId as string;
