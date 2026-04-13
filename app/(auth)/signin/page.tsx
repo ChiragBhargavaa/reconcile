@@ -9,10 +9,10 @@ function SignInContent() {
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-transparent">
-      <main className="w-full max-w-sm space-y-8 rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-transparent px-4">
+      <main className="w-full max-w-sm space-y-8 rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-8 shadow-[8px_8px_0_#111]">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-zinc-900">Reconcile</h1>
+          <h1 className="text-2xl font-black text-zinc-900">Reconcile</h1>
           <p className="mt-1 text-sm text-zinc-800">
             Split expenses with friends
           </p>
@@ -20,7 +20,7 @@ function SignInContent() {
         <button
           type="button"
           onClick={() => signIn("google", { callbackUrl })}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-white/15 backdrop-blur-xl px-4 py-3 text-sm font-medium text-zinc-700 transition ring-1 ring-white/20 hover:bg-white/25"
+            className="flex w-full items-center justify-center gap-2 rounded-md border-2 border-zinc-900 bg-[#6ee7b7] px-4 py-3 text-sm font-bold text-zinc-900 shadow-[4px_4px_0_#111] transition hover:-translate-y-0.5"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24">
             <path

@@ -206,7 +206,7 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+      <div className="rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-6 shadow-[8px_8px_0_#111]">
         {/* Profile picture + email (read-only) */}
         <div className="mb-6 flex items-center gap-4 pb-6">
           {profile?.image && (
@@ -214,7 +214,7 @@ export default function SettingsPage() {
               src={profile.image}
               alt=""
               referrerPolicy="no-referrer"
-              className="h-14 w-14 rounded-full ring-2 ring-white/30 shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
+              className="h-14 w-14 rounded-md border-2 border-zinc-900"
             />
           )}
           <div>
@@ -244,7 +244,7 @@ export default function SettingsPage() {
               }}
               placeholder="John Doe"
               maxLength={100}
-              className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-4 py-3 text-zinc-900 placeholder-zinc-500 shadow-inner ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+              className="w-full rounded-md border-2 border-zinc-900 bg-white px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:outline-none"
               disabled={saving}
             />
             {fieldErrors.name && (
@@ -265,7 +265,7 @@ export default function SettingsPage() {
                 onChange={(e) => handleUsernameChange(e.target.value)}
                 placeholder="e.g. john_doe"
                 maxLength={USERNAME_MAX_LENGTH}
-                className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-4 py-3 text-zinc-900 placeholder-zinc-500 shadow-inner ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+                className="w-full rounded-md border-2 border-zinc-900 bg-white px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:outline-none"
                 autoComplete="username"
                 disabled={saving}
               />
@@ -304,7 +304,7 @@ export default function SettingsPage() {
               Mobile number <span className="font-normal text-zinc-400">(optional)</span>
             </label>
             <div className="flex items-stretch">
-              <span className="inline-flex items-center rounded-l-xl bg-white/15 px-3 text-sm text-zinc-600 backdrop-blur-xl ring-1 ring-white/20">
+              <span className="inline-flex items-center rounded-l-md border-y-2 border-l-2 border-zinc-900 bg-[#f6d64a] px-3 text-sm font-semibold text-zinc-900">
                 +91
               </span>
               <input
@@ -314,7 +314,7 @@ export default function SettingsPage() {
                 onChange={(e) => handlePhoneChange(e.target.value)}
                 placeholder="98765 43210"
                 maxLength={10}
-                className="w-full rounded-r-xl bg-white/15 backdrop-blur-xl px-4 py-3 text-zinc-900 placeholder-zinc-500 shadow-inner ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+                className="w-full rounded-r-md border-2 border-zinc-900 bg-white px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:outline-none"
                 disabled={saving}
               />
             </div>
@@ -337,7 +337,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={saving || availability === "taken" || !hasChanges()}
-            className="w-full rounded-lg bg-black text-white px-4 py-3 text-sm font-medium transition hover:bg-black disabled:opacity-60"
+            className="w-full rounded-md border-2 border-zinc-900 bg-[#6ee7b7] px-4 py-3 text-sm font-bold text-zinc-900 shadow-[4px_4px_0_#111] transition hover:-translate-y-0.5 disabled:opacity-60"
           >
             {saving ? "Saving..." : "Save changes"}
           </button>

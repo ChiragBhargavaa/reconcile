@@ -2,8 +2,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f4e8;
+  --foreground: #111111;
 }
 
 @theme inline {
@@ -23,11 +23,15 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: url('/bg2.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.5;
+  background:
+    linear-gradient(135deg, #f6d64a 0 25%, #bd9bf9 25% 50%, #ffb4d2 50% 75%, #8de8ff 75% 100%);
+  background-size: 28px 28px;
+  opacity: 0.2;
   z-index: -1;
   pointer-events: none;
+}
+
+::selection {
+  background: #f6d64a;
+  color: #111111;
 }

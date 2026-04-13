@@ -83,7 +83,7 @@ export default function NewGroupPage() {
         <ArrowLeft size={16} /> Back
       </Link>
       <h1 className="text-2xl font-bold text-zinc-900">Create group</h1>
-      <form onSubmit={handleSubmit} className="mt-6 max-w-md space-y-4">
+      <form onSubmit={handleSubmit} className="mt-6 max-w-md space-y-4 rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-5 shadow-[8px_8px_0_#111]">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-zinc-900">
             Group name
@@ -94,7 +94,7 @@ export default function NewGroupPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Trip to Goa"
-            className="mt-1 w-full rounded-xl bg-white/15 backdrop-blur-xl px-4 py-2 text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+            className="mt-1 w-full rounded-md border-2 border-zinc-900 bg-white px-4 py-2 text-zinc-900 placeholder-zinc-500 focus:outline-none"
             autoFocus
           />
         </div>
@@ -112,13 +112,13 @@ export default function NewGroupPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search friends..."
-              className="flex-1 min-w-[140px] rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+              className="min-w-[140px] flex-1 rounded-md border-2 border-zinc-900 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none"
             />
           </div>
           {loadingFriends ? (
             <p className="mt-2 text-sm text-zinc-500">Loading friends...</p>
           ) : filtered.length > 0 ? (
-            <ul className="mt-2 max-h-40 space-y-1 overflow-y-auto rounded-xl bg-white/15 backdrop-blur-2xl ring-1 ring-white/20 p-2">
+            <ul className="mt-2 max-h-40 space-y-1 overflow-y-auto rounded-md border-2 border-zinc-900 bg-white p-2">
               {filtered.map((u) => (
                 <li key={u.id} className="flex items-center justify-between rounded px-2 py-1.5 hover:bg-white/20">
                   <span className="text-sm text-zinc-900">
@@ -152,13 +152,13 @@ export default function NewGroupPage() {
               {Array.from(selected.values()).map((u) => (
                 <span
                   key={u.id}
-                  className="inline-flex items-center gap-1 rounded-full bg-white/15 ring-1 ring-white/20 px-3 py-1 text-sm text-zinc-900"
+                  className="inline-flex items-center gap-1 rounded-md border-2 border-zinc-900 bg-[#bd9bf9] px-3 py-1 text-sm font-semibold text-zinc-900"
                 >
                   {u.name || u.username}
                   <button
                     type="button"
                     onClick={() => removeMember(u.id)}
-                    className="ml-1 text-zinc-500 hover:text-zinc-900"
+                    className="ml-1 rounded-sm border border-zinc-900 px-1 text-zinc-700"
                   >
                     ×
                   </button>
@@ -172,13 +172,13 @@ export default function NewGroupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-black disabled:opacity-60"
+            className="rounded-md border-2 border-zinc-900 bg-[#6ee7b7] px-4 py-2 text-sm font-bold text-zinc-900 shadow-[4px_4px_0_#111] transition hover:-translate-y-0.5 disabled:opacity-60"
           >
             {loading ? "Creating..." : "Create group"}
           </button>
           <Link
             href="/dashboard"
-            className="rounded-lg bg-white/15 ring-1 ring-white/20 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-white/25"
+            className="rounded-md border-2 border-zinc-900 bg-white px-4 py-2 text-sm font-bold text-zinc-700"
           >
             Cancel
           </Link>

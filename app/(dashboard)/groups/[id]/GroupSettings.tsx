@@ -162,7 +162,7 @@ export function GroupSettings({
   }
 
   return (
-    <div className="mt-4 space-y-4 rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-4">
+    <div className="mt-4 space-y-4 rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-4 shadow-[8px_8px_0_#111]">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-zinc-900">Group settings</h3>
         <button
@@ -183,7 +183,7 @@ export function GroupSettings({
         <p className="mb-2 text-sm font-semibold text-zinc-900">Members</p>
         <ul className="space-y-1">
           {members.map((m) => (
-            <li key={m.id} className="flex items-center justify-between rounded-lg px-2 py-1.5">
+            <li key={m.id} className="flex flex-col gap-1 rounded-lg px-2 py-1.5 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-sm text-zinc-900">
                 {m.name}{" "}
                 {m.id === currentUserId && <span className="text-xs text-zinc-400">(you)</span>}{" "}
@@ -231,7 +231,7 @@ export function GroupSettings({
       </div>
 
       {/* Duplicate payment check */}
-      <div className="border-t border-white/15 pt-4">
+      <div className="border-t-2 border-zinc-900 pt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShieldCheck size={14} className="text-zinc-600" />
@@ -248,7 +248,7 @@ export function GroupSettings({
             type="button"
             onClick={toggleDuplicateCheck}
             disabled={togglingDupCheck}
-            className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors focus:outline-none disabled:opacity-50 ${
+            className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-md border-2 border-zinc-900 transition-colors focus:outline-none disabled:opacity-50 ${
               dupCheck
                 ? "bg-green-500"
                 : "bg-zinc-400"
@@ -276,15 +276,15 @@ export function GroupSettings({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search friends..."
-            className="flex-1 min-w-[120px] rounded-xl bg-white/15 backdrop-blur-xl px-3 py-1.5 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+            className="min-w-[120px] flex-1 rounded-md border-2 border-zinc-900 bg-white px-3 py-1.5 text-sm text-zinc-900 focus:outline-none"
           />
         </div>
         {loadingFriends ? (
           <p className="mt-2 text-xs text-zinc-500">Loading friends...</p>
         ) : filteredFriends.length > 0 ? (
-          <ul className="mt-2 space-y-1 rounded-xl bg-white/15 backdrop-blur-xl ring-1 ring-white/20 p-2">
+          <ul className="mt-2 space-y-1 rounded-md border-2 border-zinc-900 bg-white p-2">
             {filteredFriends.map((u) => (
-              <li key={u.id} className="flex items-center justify-between rounded px-2 py-1 text-sm">
+              <li key={u.id} className="flex flex-col gap-1 rounded px-2 py-1 text-sm sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-zinc-900">
                   {u.name || u.username || u.id}
                 </span>
@@ -316,7 +316,7 @@ export function GroupSettings({
 
       {/* Delete group — only the group admin (creator) */}
       {isGroupAdmin && (
-        <div className="border-t border-white/15 pt-4">
+        <div className="border-t-2 border-zinc-900 pt-4">
           {!confirmDelete ? (
             <button
               type="button"
@@ -342,7 +342,7 @@ export function GroupSettings({
                 <button
                   type="button"
                   onClick={() => setConfirmDelete(false)}
-                  className="rounded-lg bg-white/15 ring-1 ring-white/20 px-3 py-1.5 text-xs text-zinc-700 hover:bg-white/25"
+                  className="rounded-md border-2 border-zinc-900 bg-white px-3 py-1.5 text-xs font-bold text-zinc-700"
                 >
                   Cancel
                 </button>

@@ -34,8 +34,8 @@ async function GroupsList() {
   }));
   if (groupsWithMembers.length === 0) {
     return (
-      <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-2 ring-dashed ring-white/30 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-16 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/20">
+      <div className="rounded-lg border-4 border-dashed border-zinc-900 bg-[#f8f4e8] p-16 text-center shadow-[8px_8px_0_#111]">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-md border-2 border-zinc-900 bg-white">
           <Plus className="h-8 w-8 text-zinc-500 dark:text-zinc-400" />
         </div>
         <h3 className="mt-4 text-xl font-bold text-zinc-900">No groups yet</h3>
@@ -44,7 +44,7 @@ async function GroupsList() {
         </p>
         <Link
           href="/groups/new"
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-black px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-black disabled:opacity-60"
+          className="mt-6 inline-flex items-center gap-2 rounded-md border-2 border-zinc-900 bg-[#f6d64a] px-5 py-3 text-sm font-bold text-zinc-900 shadow-[4px_4px_0_#111] transition hover:-translate-y-0.5 disabled:opacity-60"
         >
           <Plus size={18} /> Create your first group
         </Link>
@@ -57,7 +57,7 @@ async function GroupsList() {
         <h2 className="text-xl font-bold text-zinc-900">Your groups</h2>
         <Link
           href="/groups/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800"
+          className="inline-flex items-center gap-2 rounded-md border-2 border-zinc-900 bg-[#6ee7b7] px-4 py-2.5 text-sm font-bold text-zinc-900 shadow-[4px_4px_0_#111] transition hover:-translate-y-0.5"
         >
           <Plus size={18} /> New group
         </Link>
@@ -67,10 +67,10 @@ async function GroupsList() {
           <li key={g.id}>
             <Link
               href={`/groups/${g.id}`}
-              className="block rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-5 transition hover:bg-white/35"
+              className="block rounded-lg border-2 border-zinc-900 bg-white p-5 shadow-[5px_5px_0_#111] transition hover:-translate-y-0.5"
             >
               <span className="block text-lg font-bold text-zinc-900">{g.name}</span>
-              <span className="mt-1 inline-flex items-center rounded-full bg-cyan-50 px-3 py-0.5 text-sm font-medium text-zinc-800">
+              <span className="mt-1 inline-flex items-center rounded-md border-2 border-zinc-900 bg-[#8de8ff] px-3 py-0.5 text-sm font-bold text-zinc-900">
                 {g.members?.length || 0} members
               </span>
             </Link>

@@ -84,7 +84,7 @@ export function GroupExpenses({ groupId, groupName }: { groupId: string; groupNa
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-base font-bold text-zinc-800">Expenses</h2>
         </div>
-        <p className="rounded-xl border border-dashed border-white/30 bg-white/10 backdrop-blur-xl p-6 text-center text-sm text-zinc-600">
+        <p className="rounded-md border-4 border-dashed border-zinc-900 bg-[#f8f4e8] p-6 text-center text-sm text-zinc-700">
           No expenses yet
         </p>
       </div>
@@ -92,13 +92,13 @@ export function GroupExpenses({ groupId, groupName }: { groupId: string; groupNa
   }
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="mb-2 flex shrink-0 items-center justify-between">
+    <div className="flex min-h-0 flex-col lg:h-full">
+      <div className="mb-2 flex shrink-0 flex-wrap items-center justify-between gap-2">
         <h2 className="text-base font-bold text-zinc-900">Expenses</h2>
         <button
           type="button"
           onClick={exportPdf}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-black px-3 py-1.5 text-xs font-medium text-white transition hover:bg-zinc-800"
+          className="inline-flex items-center gap-1.5 rounded-md border-2 border-zinc-900 bg-[#f6d64a] px-3 py-1.5 text-xs font-bold text-zinc-900 shadow-[3px_3px_0_#111] transition hover:-translate-y-0.5"
         >
           <FileDown size={14} /> Export PDF
         </button>
@@ -108,10 +108,10 @@ export function GroupExpenses({ groupId, groupName }: { groupId: string; groupNa
           {expenses.map((e) => (
             <li
               key={e.id}
-              className="rounded-xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] px-3 py-2"
+              className="rounded-md border-2 border-zinc-900 bg-white px-3 py-2 shadow-[4px_4px_0_#111]"
             >
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 truncate">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0 break-words">
                   <span className="text-sm font-medium text-zinc-900">
                     ₹{e.amount.toFixed(2)}
                   </span>
@@ -122,11 +122,11 @@ export function GroupExpenses({ groupId, groupName }: { groupId: string; groupNa
                     <span className="ml-1.5 text-xs italic text-zinc-500">— {e.note}</span>
                   )}
                 </div>
-                <span className="ml-2 shrink-0 text-[11px] text-zinc-400">
+                <span className="shrink-0 text-[11px] text-zinc-400 sm:ml-2 sm:text-right">
                   {new Date(e.createdAt).toLocaleDateString()}
                 </span>
               </div>
-              <div className="mt-0.5 text-[11px] text-zinc-500">
+              <div className="mt-0.5 break-words text-[11px] text-zinc-500">
                 Split: {e.shares.map((s) => `${s.user?.name || s.user?.username || "?"}: ₹${s.amount.toFixed(2)}`).join(", ")}
               </div>
             </li>

@@ -22,7 +22,7 @@ export default function LandingPage() {
   if (status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-none border-4 border-zinc-900 border-t-transparent" />
       </div>
     );
   }
@@ -30,22 +30,22 @@ export default function LandingPage() {
   if (status === "authenticated" && session?.user?.id) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-none border-4 border-zinc-900 border-t-transparent" />
       </div>
     );
   }
 
   return (
     <div className="relative flex min-h-screen flex-col items-center overflow-hidden">
-      <main className="relative z-10 flex flex-1 w-full max-w-lg flex-col justify-center items-center px-6 text-center">
+      <main className="relative z-10 flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 text-center">
    
 
-        <Image src="/logo.png" alt="Reconcile" width={72} height={72} className="mb-4 rounded-full" />
+        <Image src="/logo.png" alt="Reconcile" width={72} height={72} className="mb-4 rounded-lg border-4 border-zinc-900 bg-white p-1 shadow-[6px_6px_0_#111]" />
 
-        <h1 className="text-5xl font-bold tracking-tight text-zinc-900 sm:text-6xl">
+        <h1 className="text-5xl font-black tracking-tight text-zinc-900 sm:text-6xl">
           Reconcile
         </h1>
-        <p className="mt-4 text-lg leading-relaxed text-zinc-700 sm:text-xl">
+        <p className="mt-4 text-lg leading-relaxed text-zinc-800 sm:text-xl">
           Split expenses, track balances, and settle up with friends effortlessly.
         </p>
 
@@ -53,7 +53,7 @@ export default function LandingPage() {
           <button
             type="button"
             onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-            className="flex w-full items-center justify-center gap-3 rounded-xl bg-white px-6 py-3.5 text-[15px] font-medium text-zinc-800 shadow-md ring-1 ring-zinc-200 transition-all duration-200 hover:bg-zinc-50 active:scale-[0.98]"
+            className="flex w-full items-center justify-center gap-3 rounded-md border-2 border-zinc-900 bg-[#f6d64a] px-6 py-3.5 text-[15px] font-bold text-zinc-900 shadow-[5px_5px_0_#111] transition hover:-translate-y-0.5"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
@@ -107,8 +107,8 @@ export default function LandingPage() {
         </div>
       </main>
 
-      <footer className="relative z-10 mt-auto pb-6 pt-12 flex flex-col items-center gap-2">
-        <p className="text-xs text-gray-500">
+      <footer className="relative z-10 mt-auto flex flex-col items-center gap-2 pb-6 pt-12">
+        <p className="text-xs text-zinc-700">
           © 2026 Reconcile · Created by Chirag Bhargava
         </p>
       </footer>

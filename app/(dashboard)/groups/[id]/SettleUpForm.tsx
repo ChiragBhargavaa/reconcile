@@ -86,12 +86,12 @@ export function SettleUpForm({
   if (members.length === 0) return null;
 
   return (
-    <div className="mt-4 border-t border-white/15 pt-4">
+    <div className="mt-4 border-t-2 border-zinc-900 pt-4">
       {!show ? (
         <button
           type="button"
           onClick={() => setShow(true)}
-          className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
+          className="rounded-md border-2 border-zinc-900 bg-[#ffb4d2] px-4 py-2 text-sm font-bold text-zinc-900 shadow-[4px_4px_0_#111] transition hover:-translate-y-0.5"
         >
           Settle up
         </button>
@@ -103,7 +103,7 @@ export function SettleUpForm({
           <select
             value={receiverId}
             onChange={(e) => setReceiverId(e.target.value)}
-            className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+            className="w-full rounded-md border-2 border-zinc-900 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none"
             required
           >
             <option value="">Select person</option>
@@ -119,7 +119,7 @@ export function SettleUpForm({
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="Amount (₹), e.g. 100+50"
-            className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+            className="w-full rounded-md border-2 border-zinc-900 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:outline-none"
             required
           />
           <input
@@ -127,14 +127,14 @@ export function SettleUpForm({
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Note (optional)"
-            className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+            className="w-full rounded-md border-2 border-zinc-900 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:outline-none"
           />
           {error && <p className="text-sm text-red-400">{error}</p>}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               type="submit"
               disabled={loading}
-              className="rounded-lg bg-black px-3 py-1.5 text-sm text-white transition hover:bg-black disabled:opacity-60"
+              className="rounded-md border-2 border-zinc-900 bg-[#6ee7b7] px-3 py-1.5 text-sm font-bold text-zinc-900 shadow-[3px_3px_0_#111] transition hover:-translate-y-0.5 disabled:opacity-60"
             >
               {loading ? "Recording..." : "Record"}
             </button>
@@ -144,7 +144,7 @@ export function SettleUpForm({
                 setShow(false);
                 setError("");
               }}
-              className="rounded-lg bg-white/15 ring-1 ring-white/20 px-3 py-1.5 text-sm text-zinc-700 hover:bg-white/25"
+              className="rounded-md border-2 border-zinc-900 bg-white px-3 py-1.5 text-sm font-bold text-zinc-700"
             >
               Cancel
             </button>

@@ -63,7 +63,7 @@ export default async function GroupPage({
   return (
     <div className="flex flex-col gap-6 lg:max-h-[calc(100vh-5.5rem)] lg:flex-row lg:overflow-hidden">
       {/* Left side: Group details + Add expense */}
-      <div className="shrink-0 overflow-y-auto pb-6 lg:w-[340px]">
+      <div className="shrink-0 pb-6 lg:w-[340px] lg:overflow-y-auto">
         <Link
           href="/dashboard"
           className="mb-[clamp(4px,0.8vh,10px)] inline-flex items-center gap-2 text-[clamp(12px,1.8vh,16px)] font-medium text-zinc-600 transition hover:text-zinc-900"
@@ -94,42 +94,43 @@ export default async function GroupPage({
       </div>
 
       {/* Right side: Stats */}
-      <div className="min-w-0 flex-1 overflow-hidden">
-        <div className="flex h-full flex-col gap-4">
-          <div className="shrink-0 rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-4">
-            <h2 className="mb-3 text-base font-bold text-zinc-900">Balances</h2>
+      <div className="min-w-0 flex-1 lg:overflow-hidden">
+        <div className="flex flex-col gap-4 lg:h-full">
+          <div className="shrink-0 rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-3 shadow-[8px_8px_0_#111] sm:p-4">
+            <h2 className="mb-2 text-sm font-bold text-zinc-900 sm:mb-3 sm:text-base">Balances</h2>
+            <div className="max-h-[30vh] overflow-y-auto pr-1 lg:max-h-none lg:overflow-visible lg:pr-0">
             {summary.youOwe.length === 0 && summary.youAreOwed.length === 0 ? (
-              <p className="text-sm text-zinc-600">All settled up!</p>
+              <p className="text-xs text-zinc-600 sm:text-sm">All settled up!</p>
             ) : (
               <>
                 {summary.youOwe.length > 0 && (
-                  <div className="mb-3">
-                    <p className="text-sm font-semibold text-zinc-900">You owe</p>
+                  <div className="mb-2 sm:mb-3">
+                    <p className="text-xs font-semibold text-zinc-900 sm:text-sm">You owe</p>
                     <ul className="mt-1 space-y-0.5">
                       {summary.youOwe.map((b) => (
-                        <li key={b.userId} className="flex justify-between text-sm">
+                        <li key={b.userId} className="flex justify-between text-xs sm:text-sm">
                           <span className="truncate text-zinc-900">{b.name}</span>
                           <span className="ml-2 shrink-0 font-medium text-red-400">₹{b.amount.toFixed(2)}</span>
                         </li>
                       ))}
                     </ul>
-                    <p className="mt-1 border-t border-white/15 pt-1 text-sm font-bold text-red-400">
+                    <p className="mt-1 border-t-2 border-zinc-900 pt-1 text-xs font-bold text-red-500 sm:text-sm">
                       Total: ₹{summary.youOwe.reduce((s, b) => s + b.amount, 0).toFixed(2)}
                     </p>
                   </div>
                 )}
                 {summary.youAreOwed.length > 0 && (
-                  <div className="mb-3">
-                    <p className="text-sm font-semibold text-zinc-900">You are owed</p>
+                  <div className="mb-2 sm:mb-3">
+                    <p className="text-xs font-semibold text-zinc-900 sm:text-sm">You are owed</p>
                     <ul className="mt-1 space-y-0.5">
                       {summary.youAreOwed.map((b) => (
-                        <li key={b.userId} className="flex justify-between text-sm">
+                        <li key={b.userId} className="flex justify-between text-xs sm:text-sm">
                           <span className="truncate text-zinc-900">{b.name}</span>
                           <span className="ml-2 shrink-0 font-medium text-green-600">₹{b.amount.toFixed(2)}</span>
                         </li>
                       ))}
                     </ul>
-                    <p className="mt-1 border-t border-white/15 pt-1 text-sm font-bold text-green-600">
+                    <p className="mt-1 border-t-2 border-zinc-900 pt-1 text-xs font-bold text-green-700 sm:text-sm">
                       Total: ₹{summary.youAreOwed.reduce((s, b) => s + b.amount, 0).toFixed(2)}
                     </p>
                   </div>
@@ -142,6 +143,7 @@ export default async function GroupPage({
                 />
               </>
             )}
+            </div>
           </div>
           <div className="min-h-0 flex-1">
             <GroupLedgerTabs groupId={id} groupName={group.name} />

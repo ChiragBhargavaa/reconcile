@@ -20,7 +20,7 @@ export default async function InvitePage({
   });
   if (!link) {
     return (
-      <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+      <div className="rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-6 shadow-[8px_8px_0_#111]">
         <h2 className="text-lg font-semibold text-zinc-900">
           Invalid or expired link
         </h2>
@@ -37,7 +37,7 @@ export default async function InvitePage({
   const inviterId = link.userId as string;
   if (inviterId === session.user.id) {
     return (
-      <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+      <div className="rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-6 shadow-[8px_8px_0_#111]">
         <h2 className="text-lg font-semibold text-zinc-900">
           That&apos;s your own link
         </h2>
@@ -58,7 +58,7 @@ export default async function InvitePage({
 
   if (existing?.status === "accepted") {
     return (
-      <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+      <div className="rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-6 shadow-[8px_8px_0_#111]">
         <h2 className="text-lg font-semibold text-zinc-900">
           Already friends
         </h2>
@@ -75,7 +75,7 @@ export default async function InvitePage({
   if (existing?.status === "pending") {
     if (existing.requestedBy === session.user.id) {
       return (
-        <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+        <div className="rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-6 shadow-[8px_8px_0_#111]">
           <h2 className="text-lg font-semibold text-zinc-900">
             Request pending
           </h2>
@@ -105,7 +105,7 @@ export default async function InvitePage({
   );
 
   return (
-    <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6">
+    <div className="rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-6 shadow-[8px_8px_0_#111]">
       <h2 className="text-lg font-semibold text-zinc-900">
         You&apos;re now friends!
       </h2>

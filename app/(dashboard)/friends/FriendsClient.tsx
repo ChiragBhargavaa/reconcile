@@ -141,10 +141,10 @@ export function FriendsClient({
             {pending.map((u) => (
               <li
                 key={u.id}
-                className="flex items-center justify-between rounded-2xl bg-amber-50/20 backdrop-blur-2xl ring-1 ring-amber-300/30 shadow-[0_4px_20px_rgba(0,0,0,0.05)] px-4 py-3"
+                className="flex items-center justify-between rounded-lg border-2 border-zinc-900 bg-[#f6d64a] px-4 py-3 shadow-[4px_4px_0_#111]"
               >
                 <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-200/50 text-sm font-semibold text-amber-800 ring-2 ring-white/30 shadow-[0_1px_4px_rgba(0,0,0,0.08)]">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-md border-2 border-zinc-900 bg-white text-sm font-bold text-zinc-900">
                     {(u.name || u.username || "?").charAt(0).toUpperCase()}
                   </div>
                   <div>
@@ -163,7 +163,7 @@ export function FriendsClient({
                     type="button"
                     onClick={() => acceptRequest(u.id)}
                     disabled={acceptingIds.has(u.id)}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-green-500 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-green-600 disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 rounded-md border-2 border-zinc-900 bg-[#6ee7b7] px-3 py-1.5 text-sm font-bold text-zinc-900 transition hover:-translate-y-0.5 disabled:opacity-50"
                   >
                     <UserCheck size={14} />
                     {acceptingIds.has(u.id) ? "Accepting..." : "Accept"}
@@ -172,7 +172,7 @@ export function FriendsClient({
                     type="button"
                     onClick={() => rejectRequest(u.id)}
                     disabled={rejectingIds.has(u.id)}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-white/15 ring-1 ring-white/20 px-3 py-1.5 text-sm font-medium text-zinc-600 transition hover:bg-white/25 disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 rounded-md border-2 border-zinc-900 bg-white px-3 py-1.5 text-sm font-bold text-zinc-700 transition hover:-translate-y-0.5 disabled:opacity-60"
                   >
                     <UserX size={14} />
                     {rejectingIds.has(u.id) ? "Declining..." : "Decline"}
@@ -190,7 +190,7 @@ export function FriendsClient({
             Your friends
           </h2>
         {friends.length === 0 ? (
-          <div className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-2 ring-dashed ring-white/30 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-8 text-center">
+          <div className="rounded-lg border-4 border-dashed border-zinc-900 bg-[#f8f4e8] p-8 text-center shadow-[6px_6px_0_#111]">
             <Users className="mx-auto h-8 w-8 text-zinc-400" />
             <p className="mt-2 text-sm text-zinc-600">
               No friends yet. Search for users below or share your invite link!
@@ -201,9 +201,9 @@ export function FriendsClient({
             {friends.map((u) => (
               <li
                 key={u.id}
-                className="flex items-center gap-3 rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] px-4 py-3"
+                className="flex items-center gap-3 rounded-lg border-2 border-zinc-900 bg-white px-4 py-3 shadow-[4px_4px_0_#111]"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-sm font-semibold text-zinc-700 ring-2 ring-white/30 shadow-[0_1px_4px_rgba(0,0,0,0.08)]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-md border-2 border-zinc-900 bg-[#bd9bf9] text-sm font-bold text-zinc-900">
                   {(u.name || u.username || "?").charAt(0).toUpperCase()}
                 </div>
                 <div>
@@ -234,7 +234,7 @@ export function FriendsClient({
           type="button"
           onClick={createInvite}
           disabled={loadingInvite}
-          className="inline-flex items-center gap-2 rounded-lg bg-white/15 backdrop-blur-xl ring-1 ring-white/20 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-white/25"
+          className="inline-flex items-center gap-2 rounded-md border-2 border-zinc-900 bg-[#8de8ff] px-4 py-2 text-sm font-bold text-zinc-900 shadow-[4px_4px_0_#111] hover:-translate-y-0.5"
         >
           <Link2 size={18} /> {loadingInvite ? "Generating..." : "Create invite link"}
         </button>
@@ -260,12 +260,12 @@ export function FriendsClient({
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && doSearch()}
             placeholder="Search by username, email, or phone"
-            className="flex-1 min-w-[200px] rounded-xl bg-white/15 backdrop-blur-xl px-4 py-2 text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+            className="min-w-[200px] flex-1 rounded-md border-2 border-zinc-900 bg-white px-4 py-2 text-zinc-900 focus:outline-none"
           />
           <select
             value={searchType}
             onChange={(e) => setSearchType(e.target.value as "username" | "email" | "phone")}
-            className="rounded-xl bg-white/15 backdrop-blur-xl px-4 py-2 text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+            className="rounded-md border-2 border-zinc-900 bg-white px-4 py-2 text-zinc-900 focus:outline-none"
           >
             <option value="username">Username</option>
             <option value="email">Email</option>
@@ -275,7 +275,7 @@ export function FriendsClient({
             type="button"
             onClick={doSearch}
             disabled={searching}
-            className="inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-black"
+            className="inline-flex items-center gap-2 rounded-md border-2 border-zinc-900 bg-[#ffb4d2] px-4 py-2 text-sm font-bold text-zinc-900 shadow-[4px_4px_0_#111] transition hover:-translate-y-0.5"
           >
             <Search size={18} /> {searching ? "Searching..." : "Search"}
           </button>
@@ -289,10 +289,10 @@ export function FriendsClient({
               return (
                 <li
                   key={u.id}
-                  className="flex items-center justify-between rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] px-4 py-3"
+                  className="flex items-center justify-between rounded-lg border-2 border-zinc-900 bg-white px-4 py-3 shadow-[4px_4px_0_#111]"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-sm font-semibold text-zinc-700 ring-2 ring-white/30 shadow-[0_1px_4px_rgba(0,0,0,0.08)]">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-md border-2 border-zinc-900 bg-[#bd9bf9] text-sm font-bold text-zinc-900">
                       {(u.name || u.username || "?").charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -319,7 +319,7 @@ export function FriendsClient({
                       type="button"
                       onClick={() => sendRequest(u.id)}
                       disabled={isRequesting}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-black px-3 py-1.5 text-sm font-medium text-white transition hover:bg-black disabled:opacity-60"
+                      className="inline-flex items-center gap-1.5 rounded-md border-2 border-zinc-900 bg-[#6ee7b7] px-3 py-1.5 text-sm font-bold text-zinc-900 transition hover:-translate-y-0.5 disabled:opacity-60"
                     >
                       <UserPlus size={14} />
                       {isRequesting ? "Sending..." : "Add friend"}

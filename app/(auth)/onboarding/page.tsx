@@ -52,7 +52,7 @@ export default function OnboardingPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-transparent">
         <div className="text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-900" />
+          <div className="mx-auto h-8 w-8 animate-spin rounded-none border-4 border-zinc-900 border-t-transparent" />
           <p className="mt-3 text-sm text-zinc-600">Loading your profile...</p>
         </div>
       </div>
@@ -174,14 +174,14 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-transparent">
-      <main className="w-full max-w-md space-y-6 rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-transparent px-4">
+      <main className="w-full max-w-md space-y-6 rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-8 shadow-[8px_8px_0_#111]">
         <div className="text-center">
           {session.user.image && (
             <img
               src={session.user.image}
               alt=""
-              className="mx-auto mb-4 h-16 w-16 rounded-full ring-2 ring-white/30 shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
+              className="mx-auto mb-4 h-16 w-16 rounded-md border-2 border-zinc-900"
             />
           )}
           <h1 className="text-2xl font-bold text-zinc-900">
@@ -208,7 +208,7 @@ export default function OnboardingPage() {
               }}
               placeholder="John Doe"
               maxLength={100}
-              className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-4 py-3 text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+              className="w-full rounded-md border-2 border-zinc-900 bg-white px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:outline-none"
               disabled={loading}
             />
             {fieldErrors.name && (
@@ -229,7 +229,7 @@ export default function OnboardingPage() {
                 onChange={(e) => handleUsernameChange(e.target.value)}
                 placeholder="e.g. john_doe"
                 maxLength={USERNAME_MAX_LENGTH}
-                className="w-full rounded-xl bg-white/15 backdrop-blur-xl px-4 py-3 text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+                className="w-full rounded-md border-2 border-zinc-900 bg-white px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:outline-none"
                 autoComplete="username"
                 disabled={loading}
               />
@@ -268,7 +268,7 @@ export default function OnboardingPage() {
               Mobile number <span className="font-normal text-zinc-400">(optional)</span>
             </label>
             <div className="flex items-stretch">
-              <span className="inline-flex items-center rounded-l-xl bg-white/15 px-3 text-sm text-zinc-600 backdrop-blur-xl ring-1 ring-white/20">
+              <span className="inline-flex items-center rounded-l-md border-y-2 border-l-2 border-zinc-900 bg-[#f6d64a] px-3 text-sm font-semibold text-zinc-900">
                 +91
               </span>
               <input
@@ -278,7 +278,7 @@ export default function OnboardingPage() {
                 onChange={(e) => handlePhoneChange(e.target.value)}
                 placeholder="98765 43210"
                 maxLength={10}
-                className="w-full rounded-r-xl bg-white/15 backdrop-blur-xl px-4 py-3 text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+                className="w-full rounded-r-md border-2 border-zinc-900 bg-white px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:outline-none"
                 disabled={loading}
               />
             </div>
@@ -307,7 +307,7 @@ export default function OnboardingPage() {
           <button
             type="submit"
             disabled={loading || availability === "taken"}
-            className="w-full rounded-lg bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-black disabled:opacity-60"
+            className="w-full rounded-md border-2 border-zinc-900 bg-[#6ee7b7] px-4 py-3 text-sm font-bold text-zinc-900 shadow-[4px_4px_0_#111] transition hover:-translate-y-0.5 disabled:opacity-60"
           >
             {loading ? "Saving..." : "Continue"}
           </button>

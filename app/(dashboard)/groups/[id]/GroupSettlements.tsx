@@ -41,7 +41,7 @@ export function GroupSettlements({ groupId }: { groupId: string }) {
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-base font-bold text-zinc-800">Settle ups</h2>
         </div>
-        <p className="rounded-xl border border-dashed border-white/30 bg-white/10 backdrop-blur-xl p-6 text-center text-sm text-zinc-600">
+        <p className="rounded-md border-4 border-dashed border-zinc-900 bg-[#f8f4e8] p-6 text-center text-sm text-zinc-700">
           No settle ups recorded yet
         </p>
       </div>
@@ -49,7 +49,7 @@ export function GroupSettlements({ groupId }: { groupId: string }) {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex min-h-0 flex-col lg:h-full">
       <div className="mb-2 flex shrink-0 items-center justify-between">
         <h2 className="text-base font-bold text-zinc-900">Settle ups</h2>
       </div>
@@ -58,10 +58,10 @@ export function GroupSettlements({ groupId }: { groupId: string }) {
           {settlements.map((s) => (
             <li
               key={s.id}
-              className="rounded-xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] px-3 py-2"
+              className="rounded-md border-2 border-zinc-900 bg-white px-3 py-2 shadow-[4px_4px_0_#111]"
             >
-              <div className="flex items-center justify-between gap-2">
-                <div className="min-w-0">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+                <div className="min-w-0 break-words">
                   <span className="text-sm font-medium text-zinc-900">₹{s.amount.toFixed(2)}</span>
                   <span className="ml-1.5 text-xs text-zinc-600">
                     {payerName(s)} paid {receiverName(s)}
@@ -70,7 +70,7 @@ export function GroupSettlements({ groupId }: { groupId: string }) {
                     <span className="ml-1.5 text-xs italic text-zinc-500">— {s.note}</span>
                   ) : null}
                 </div>
-                <span className="shrink-0 text-[11px] text-zinc-400">
+                <span className="shrink-0 text-[11px] text-zinc-400 sm:text-right">
                   {new Date(s.createdAt).toLocaleDateString()}
                 </span>
               </div>

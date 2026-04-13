@@ -15,7 +15,7 @@ export default function AboutPage() {
       </div>
 
       {/* Origin Story */}
-      <section className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6 space-y-5">
+      <section className="rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-6 shadow-[8px_8px_0_#111] space-y-5">
         <h2 className="text-xl font-semibold text-zinc-900">
           It started on a trip
         </h2>
@@ -42,7 +42,7 @@ export default function AboutPage() {
       </section>
 
       {/* What Reconcile Is */}
-      <section className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6 space-y-4">
+      <section className="rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-6 shadow-[8px_8px_0_#111] space-y-4">
         <h2 className="text-xl font-semibold text-zinc-900">
           What is Reconcile?
         </h2>
@@ -71,7 +71,7 @@ export default function AboutPage() {
             href="https://github.com/ChiragBhargavaa/reconcile"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-all hover:bg-zinc-800"
+            className="inline-flex items-center gap-2 rounded-md border-2 border-zinc-900 bg-[#6ee7b7] px-4 py-2.5 text-sm font-bold text-zinc-900 shadow-[4px_4px_0_#111]"
           >
             <Github size={16} />
             View on GitHub
@@ -79,7 +79,7 @@ export default function AboutPage() {
           <button
             type="button"
             disabled
-            className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg bg-white/40 px-4 py-2.5 text-sm font-medium text-zinc-400 ring-1 ring-white/30"
+            className="inline-flex cursor-not-allowed items-center gap-2 rounded-md border-2 border-zinc-900 bg-white px-4 py-2.5 text-sm font-bold text-zinc-400"
           >
             <Heart size={16} />
             Donate (coming soon)
@@ -88,7 +88,7 @@ export default function AboutPage() {
       </section>
 
       {/* About Me */}
-      <section className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6 space-y-4">
+      <section className="rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-6 shadow-[8px_8px_0_#111] space-y-4">
         <h2 className="text-xl font-semibold text-zinc-900">
           About me
         </h2>

@@ -135,7 +135,7 @@ export function AddExpenseForm({
     <>
       <form
         onSubmit={handleSubmit}
-        className="rounded-2xl bg-white/30 backdrop-blur-2xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-[clamp(14px,2.5vh,24px)] lg:min-w-[320px]"
+        className="rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-[clamp(14px,2.5vh,24px)] shadow-[8px_8px_0_#111] lg:min-w-[320px]"
       >
         <div className="space-y-[clamp(10px,1.8vh,18px)]">
           <div>
@@ -147,7 +147,7 @@ export function AddExpenseForm({
               inputMode="decimal"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="mt-[clamp(2px,0.4vh,4px)] w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-[clamp(5px,0.8vh,12px)] text-[clamp(12px,2vh,16px)] text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+              className="mt-[clamp(2px,0.4vh,4px)] w-full rounded-md border-2 border-zinc-900 bg-white px-3 py-[clamp(5px,0.8vh,12px)] text-[clamp(12px,2vh,16px)] text-zinc-900 placeholder-zinc-500 focus:outline-none"
               placeholder="0.00 or 100+50"
               required
             />
@@ -159,7 +159,7 @@ export function AddExpenseForm({
             <select
               value={payerId}
               onChange={(e) => setPayerId(e.target.value)}
-              className="mt-[clamp(2px,0.4vh,4px)] w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-[clamp(5px,0.8vh,12px)] text-[clamp(12px,2vh,16px)] text-zinc-900 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+              className="mt-[clamp(2px,0.4vh,4px)] w-full rounded-md border-2 border-zinc-900 bg-white px-3 py-[clamp(5px,0.8vh,12px)] text-[clamp(12px,2vh,16px)] text-zinc-900 focus:outline-none"
             >
               {members.map((m) => (
                 <option key={m.id} value={m.id}>
@@ -191,7 +191,7 @@ export function AddExpenseForm({
                 </button>
               </div>
             </div>
-            <ul className="grid max-h-[clamp(80px,18vh,200px)] grid-cols-2 gap-x-3 gap-y-0 overflow-y-auto rounded-xl ring-1 ring-white/20 py-0.5">
+            <ul className="grid max-h-[clamp(80px,18vh,200px)] grid-cols-2 gap-x-3 gap-y-0 overflow-y-auto rounded-md border-2 border-zinc-900 bg-white py-0.5">
               {members.map((m) => (
                 <li
                   key={m.id}
@@ -231,7 +231,7 @@ export function AddExpenseForm({
               type="text"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="mt-[clamp(2px,0.4vh,4px)] w-full rounded-xl bg-white/15 backdrop-blur-xl px-3 py-[clamp(5px,0.8vh,12px)] text-[clamp(12px,2vh,16px)] text-zinc-900 placeholder-zinc-500 ring-1 ring-white/20 focus:ring-2 focus:ring-white/40 focus:outline-none"
+              className="mt-[clamp(2px,0.4vh,4px)] w-full rounded-md border-2 border-zinc-900 bg-white px-3 py-[clamp(5px,0.8vh,12px)] text-[clamp(12px,2vh,16px)] text-zinc-900 placeholder-zinc-500 focus:outline-none"
               placeholder="e.g. Dinner at cafe"
             />
           </div>
@@ -239,7 +239,7 @@ export function AddExpenseForm({
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-black py-[clamp(5px,0.8vh,12px)] text-[clamp(12px,2vh,16px)] font-medium text-white transition hover:bg-black disabled:opacity-60"
+            className="w-full rounded-md border-2 border-zinc-900 bg-[#6ee7b7] py-[clamp(5px,0.8vh,12px)] text-[clamp(12px,2vh,16px)] font-bold text-zinc-900 shadow-[4px_4px_0_#111] transition hover:-translate-y-0.5 disabled:opacity-60"
           >
             {loading ? "Adding..." : "Add expense"}
           </button>
@@ -248,7 +248,7 @@ export function AddExpenseForm({
 
       {duplicateWarning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white ring-1 ring-zinc-200 shadow-[0_4px_20px_rgba(0,0,0,0.1)] p-5">
+          <div className="w-full max-w-sm rounded-lg border-4 border-zinc-900 bg-[#f8f4e8] p-5 shadow-[8px_8px_0_#111]">
             <div className="mb-3 flex items-center gap-2 text-amber-600">
               <AlertTriangle size={20} />
               <h3 className="text-sm font-semibold">Possible duplicate payment</h3>
@@ -256,7 +256,7 @@ export function AddExpenseForm({
             <p className="mb-3 text-sm text-zinc-600">
               The amount you entered matches the last expense in this group. This might be an accidental duplicate.
             </p>
-            <div className="mb-4 rounded-xl bg-white/15 ring-1 ring-white/20 p-3">
+            <div className="mb-4 rounded-md border-2 border-zinc-900 bg-white p-3">
               <p className="text-sm font-semibold text-zinc-900">Last transaction</p>
               <p className="mt-1 text-sm font-semibold text-zinc-800">
                 ₹{duplicateWarning.amount.toFixed(2)}
@@ -278,7 +278,7 @@ export function AddExpenseForm({
                   setLoading(true);
                   submitExpense(parseAmount(amount));
                 }}
-                  className="flex-1 rounded-lg bg-black py-2 text-sm font-medium text-white transition hover:bg-black"
+                  className="flex-1 rounded-md border-2 border-zinc-900 bg-[#f6d64a] py-2 text-sm font-bold text-zinc-900 shadow-[3px_3px_0_#111] transition hover:-translate-y-0.5"
               >
                 Add anyway
               </button>
@@ -288,7 +288,7 @@ export function AddExpenseForm({
                   setDuplicateWarning(null);
                   setLoading(false);
                 }}
-                  className="flex-1 rounded-lg bg-white/15 ring-1 ring-white/20 py-2 text-sm font-medium text-zinc-700 hover:bg-white/25"
+                  className="flex-1 rounded-md border-2 border-zinc-900 bg-white py-2 text-sm font-bold text-zinc-700"
               >
                 Cancel
               </button>
